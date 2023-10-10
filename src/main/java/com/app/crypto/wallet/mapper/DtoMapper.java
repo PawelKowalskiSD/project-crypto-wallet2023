@@ -2,10 +2,8 @@ package com.app.crypto.wallet.mapper;
 
 import com.app.crypto.wallet.domain.Coin;
 import com.app.crypto.wallet.domain.User;
-import com.app.crypto.wallet.domain.dto.EditUserDto;
-import com.app.crypto.wallet.domain.dto.ReadCoinDto;
-import com.app.crypto.wallet.domain.dto.ReadUserDto;
-import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.domain.Wallet;
+import com.app.crypto.wallet.domain.dto.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +16,7 @@ public class DtoMapper {
     }
 
     public ReadUserDto mapUserToUserDto(User user) {
-        return new ReadUserDto(user.getId(),
+        return new ReadUserDto(user.getUserId(),
                 user.getUsername(),
                 user.getMailAddressee(),
                 user.isEnabled(),
@@ -26,7 +24,7 @@ public class DtoMapper {
                 .map(u -> new ReadWalletDto(
                         u.getWalletId(),
                         u.getWalletName(),
-                        u.getUser().getId(),
+                        u.getUser().getUserId(),
                         mapCoinToCoinReadDto(u.getCoinList())))
                 .collect(Collectors.toList()));
     }
@@ -42,5 +40,35 @@ public class DtoMapper {
                         c.getAverageSalePrice(),
                         c.getCurrentPrice()))
                         .collect(Collectors.toList());
+    }
+
+    public List<ReadWalletDto> mapReadWalletDtoToWalletLists(List<Wallet> wallets) {
+        return wallets.stream()
+                .map(wallet -> new ReadWalletDto(
+                        wallet.getWalletId(),
+                        wallet.getWalletName(),
+                        wallet.getUser().getUserId(),
+                        mapCoinToCoinReadDto(wallet.getCoinList())))
+                .collect(Collectors.toList());
+    }
+
+    public ReadWalletDto mapReadWalletDtoToWallet(Wallet wallet) {
+        return new ReadWalletDto(
+                wallet.getWalletId(),
+                wallet.getWalletName(),
+                wallet.getUser().getUserId(),
+                mapCoinToCoinReadDto(wallet.getCoinList()));
+    }
+
+    public Wallet mapCreateWalletDtoToWallet(CreateWalletDto createWalletDto) {
+        return new Wallet();
+    }
+
+    public Wallet mapEditWallDtoToWallet(EditWalletDto editWalletDto) {
+        return new Wallet();
+    }
+
+    public EditWalletDto mapWalletToEditWalletDto(Wallet wallet) {
+        return new EditWalletDto();
     }
 }

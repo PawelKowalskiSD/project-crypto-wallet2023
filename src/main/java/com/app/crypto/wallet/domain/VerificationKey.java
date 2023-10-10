@@ -10,4 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VerificationKey {
+    private Long verifyKeyId;
+    private String value;
+    private User user;
 }
