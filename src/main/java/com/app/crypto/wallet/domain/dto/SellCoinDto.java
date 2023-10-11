@@ -1,22 +1,18 @@
-package com.app.crypto.wallet.domain;
+package com.app.crypto.wallet.domain.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class Coin {
-    private long coinId;
+public class SellCoinDto {
     private String coinName;
-    private String symbol;
     private BigDecimal quantity;
-    private BigDecimal averagePurchasePrice;
     private BigDecimal averageSalePrice;
     private BigDecimal currentPrice;
-    private BigDecimal totalValuePurchaseCoin;
+    private long walletId;
     private BigDecimal totalValueOfCoinsSold;
 }

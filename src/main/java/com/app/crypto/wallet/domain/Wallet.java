@@ -17,4 +17,8 @@ public class Wallet {
     private String walletName;
     private User user;
     private List<Coin> coinList = new ArrayList<>();
+
+    public Wallet(String walletName) {
+        this.walletName = walletName;
+    }
 }
