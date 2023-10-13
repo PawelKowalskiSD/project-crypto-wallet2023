@@ -12,7 +12,6 @@ public class UserService {
     }
 
     public void deleteUserAccount() {
-
     }
 
     public List<User> getAllUser() {
@@ -21,5 +20,8 @@ public class UserService {
 
     public User getUserById(Long userId) {
         return null;
+    }
+    public User createNewUser(User user) {
+        return user;
     }
 }

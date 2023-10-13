@@ -149,8 +149,7 @@ public class DtoMapper {
 
     public CreateRoleDto mapRoleToCreateRoleDto(Role role) {
         return new CreateRoleDto(
-                role.getRoleName(),
-                role.getUser().getUserId());
+                role.getRoleName());
     }
 
     public List<ReadUserDto> mapUserListToReadUserDtoList(List<User> users) {
@@ -197,5 +196,18 @@ public class DtoMapper {
     public AuthResponseDto mapJwtTokenToAuthResponseDto(JwtToken token) {
         return new AuthResponseDto(
                 token.getToken());
+    }
+
+    public User mapCreateUserDtoToUser(CreateUserDto createUserDto) {
+        return new User(createUserDto.getUsername(),
+                createUserDto.getPassword(),
+                createUserDto.getMailAddressee());
+    }
+
+    public CreateUserDto mapUserToCreateUserDto(User user) {
+        return new CreateUserDto(
+                user.getUsername(),
+                user.getPassword(),
+                user.getMailAddressee());
     }
 }

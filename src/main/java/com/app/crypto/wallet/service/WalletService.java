@@ -16,7 +16,6 @@ public class WalletService {
     }
 
     public void createNewWallet(Wallet wallet) {
-
     }
 
     public Wallet editWallet(Wallet wallet) {

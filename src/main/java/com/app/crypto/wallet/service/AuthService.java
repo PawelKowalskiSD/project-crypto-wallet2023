@@ -10,4 +10,7 @@ public class AuthService {
     public JwtToken getToken(User user) {
         return null;
     }
+
+    public void verify(String verifyToken) {
+    }
 }
