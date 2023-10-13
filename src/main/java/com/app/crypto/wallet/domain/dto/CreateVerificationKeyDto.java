@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CreateVerificationKeyDto {
     private String value;
-    private Long userId;
+    private long userId;
 }

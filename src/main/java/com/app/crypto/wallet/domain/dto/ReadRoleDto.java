@@ -1,11 +1,12 @@
-package com.app.crypto.wallet.domain;
+package com.app.crypto.wallet.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchCoin {
-    private String coinName;
+public class ReadRoleDto {
+    private String roleName;
 }

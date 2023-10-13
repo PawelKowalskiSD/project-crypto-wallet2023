@@ -1,16 +1,15 @@
 package com.app.crypto.wallet.client.service;
 
-import com.app.crypto.wallet.domain.AddCoin;
-import com.app.crypto.wallet.domain.SearchCoin;
+import com.app.crypto.wallet.domain.Coin;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CoinGeckoClientService {
-    public SearchCoin searchCoin(SearchCoin coin) {
-        return null;
+    public Coin searchCoin(Coin coin) {
+        return coin;
     }
 
-    public AddCoin addCoinToWallet(AddCoin addCoin, Long walletId) {
-        return addCoin;
+    public Coin addCoinToWallet(Coin coin) {
+        return coin;
     }
 }

@@ -28,14 +28,14 @@ public class WalletController {
         return dtoMapper.mapReadWalletDtoToWallet(walletService.findWallet(walletId));
     }
 
-    @PostMapping("/create-wallets")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createWallet(@RequestBody CreateWalletDto createWalletDto) {
         walletService.createNewWallet(dtoMapper.mapCreateWalletDtoToWallet(createWalletDto));
     }
 
-    @PatchMapping(value = "/{walletId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public EditWalletDto walletEditing(@RequestBody EditWalletDto editWalletDto, @PathVariable Long walletId) {
-        return dtoMapper.mapWalletToEditWalletDto(walletService.editWallet(dtoMapper.mapEditWallDtoToWallet(editWalletDto), walletId));
+    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public EditWalletDto editWallet(@RequestBody EditWalletDto editWalletDto) {
+        return dtoMapper.mapWalletToEditWalletDto(walletService.editWallet(dtoMapper.mapEditWallDtoToWallet(editWalletDto)));
     }
 
     @DeleteMapping(value = "/{walletId}")

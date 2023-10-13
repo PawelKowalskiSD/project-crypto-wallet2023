@@ -6,6 +6,7 @@ import com.app.crypto.wallet.domain.dto.ReadWalletDto;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +18,20 @@ public class UserController {
     private final UserService userService;
     private final DtoMapper dtoMapper;
 
-
-    @PatchMapping(value = "/edit-account")
+    @GetMapping
+    public List<ReadUserDto> getAllUsers() {
+        return dtoMapper.mapUserListToReadUserDtoList(userService.getAllUser());
+    }
+    @GetMapping(value = "{userId}")
+    public ReadUserDto getUser(@PathVariable Long userId) {
+     return dtoMapper.mapReadUserDtoToUser(userService.getUserById(userId));
+    }
+    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReadUserDto editAccount(@RequestBody EditUserDto editUserDto) {
         return dtoMapper.mapUserToUserDto(userService.editUserAccount(dtoMapper.mapUserDtoToUser(editUserDto)));
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping
     public void deleteUser() {
         userService.deleteUserAccount();
     }

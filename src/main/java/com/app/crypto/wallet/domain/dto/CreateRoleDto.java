@@ -3,10 +3,11 @@ package com.app.crypto.wallet.domain.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-@Getter
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditWalletDto {
-    private String walletName;
+@Getter
+public class CreateRoleDto {
+    private String roleName;
     private long userId;
 }

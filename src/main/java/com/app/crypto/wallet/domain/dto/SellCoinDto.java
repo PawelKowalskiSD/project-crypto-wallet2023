@@ -14,5 +14,6 @@ public class SellCoinDto {
     private BigDecimal averageSalePrice;
     private BigDecimal currentPrice;
     private long walletId;
+    private long userId;
     private BigDecimal totalValueOfCoinsSold;
 }

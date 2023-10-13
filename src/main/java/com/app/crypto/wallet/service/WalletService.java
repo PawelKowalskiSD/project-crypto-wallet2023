@@ -19,7 +19,7 @@ public class WalletService {
 
     }
 
-    public Wallet editWallet(Wallet wallet, Long walletId) {
+    public Wallet editWallet(Wallet wallet) {
         return wallet;
     }
 

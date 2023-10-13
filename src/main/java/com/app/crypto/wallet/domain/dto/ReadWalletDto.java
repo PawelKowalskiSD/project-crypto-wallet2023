@@ -15,4 +15,10 @@ public class ReadWalletDto {
     private String walletName;
     private long userId;
     private List<ReadCoinDto> coins = new ArrayList<>();
+
+    public ReadWalletDto(long walletId, String walletName, List<ReadCoinDto> coins) {
+        this.walletId = walletId;
+        this.walletName = walletName;
+        this.coins = coins;
+    }
 }
