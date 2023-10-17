@@ -1,25 +1,37 @@
 package com.app.crypto.wallet.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ROLE_ID")
     private long roleId;
     private String roleName;
-    private User user;
+
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
 
     public Role(String roleName) {
         this.roleName = roleName;
     }
 
-    public Role(String roleName, User user) {
+
+    public Role(String roleName, List<User> users) {
         this.roleName = roleName;
-        this.user = user;
+        this.users = users;
     }
 }

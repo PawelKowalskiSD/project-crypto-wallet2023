@@ -20,12 +20,12 @@ public class AuthController {
 
     @PostMapping(value = "/log-in", consumes = MediaType.APPLICATION_JSON_VALUE)
     public AuthResponseDto login(@RequestBody AuthRequestDto authRequestDto) {
-        return dtoMapper.mapJwtTokenToAuthResponseDto(authService.getToken(dtoMapper.mapAuthRequestDtoToUser(authRequestDto)));
+        return dtoMapper.mapToAuthResponseDto(authService.getToken(dtoMapper.mapToUser(authRequestDto)));
     }
 
     @PostMapping(value = "/sing-up", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CreateUserDto singUp(@RequestBody CreateUserDto createUserDto) {
-        return dtoMapper.mapUserToCreateUserDto(userService.createNewUser(dtoMapper.mapCreateUserDtoToUser(createUserDto)));
+        return dtoMapper.mapToCreateUserDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto)));
     }
 
     @GetMapping(value = "/{verifyKey}")

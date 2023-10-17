@@ -20,22 +20,22 @@ public class WalletController {
 
     @GetMapping
     public List<ReadWalletDto> getAllWallets() {
-        return dtoMapper.mapReadWalletDtoToWalletLists(walletService.findAllWallets());
+        return dtoMapper.mapToReadWalletDtoList(walletService.findAllWallets());
     }
 
     @GetMapping(value = "/{walletId}")
     public ReadWalletDto getWallet(@PathVariable Long walletId) {
-        return dtoMapper.mapReadWalletDtoToWallet(walletService.findWallet(walletId));
+        return dtoMapper.mapToReadWalletDto(walletService.findWallet(walletId));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createWallet(@RequestBody CreateWalletDto createWalletDto) {
-        walletService.createNewWallet(dtoMapper.mapCreateWalletDtoToWallet(createWalletDto));
+        walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto));
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public EditWalletDto editWallet(@RequestBody EditWalletDto editWalletDto) {
-        return dtoMapper.mapWalletToEditWalletDto(walletService.editWallet(dtoMapper.mapEditWallDtoToWallet(editWalletDto)));
+        return dtoMapper.mapToEditWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto)));
     }
 
     @DeleteMapping(value = "/{walletId}")

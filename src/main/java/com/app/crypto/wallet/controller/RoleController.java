@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.AddRoleDto;
 import com.app.crypto.wallet.domain.dto.CreateRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
+import com.app.crypto.wallet.domain.dto.RemoveRoleDto;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -20,23 +21,26 @@ public class RoleController {
 
     @GetMapping
     public List<ReadRoleDto> getAllRoles() {
-        return dtoMapper.mapRoleListsToReadRoleDtoLists(roleService.getRoles());
+        return dtoMapper.mapToReadRoleDtoList(roleService.getRoles());
     }
 
     @GetMapping(value = "/{roleId}")
     public ReadRoleDto getRole(@PathVariable Long roleId) {
-        return dtoMapper.mapRoleToReadRoleDto(roleService.getRoleById(roleId));
+        return dtoMapper.mapToReadRoleDto(roleService.getRoleById(roleId));
     }
 
     @PostMapping(value = "/creates", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CreateRoleDto createRole(@RequestBody CreateRoleDto createRoleDto) {
-        return dtoMapper.mapRoleToCreateRoleDto(roleService.createNewRole(dtoMapper.mapCreateRoleDtoToRole(createRoleDto)));
+        return dtoMapper.mapToCreateRoleDto(roleService.createNewRole(dtoMapper.mapToRole(createRoleDto)));
     }
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
     public AddRoleDto addRole(@RequestBody AddRoleDto addRoleDto) {
-        return dtoMapper.mapRoleToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapAddRoleDtoToRole(addRoleDto)));
+        return dtoMapper.mapToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto)));
     }
 
-
+    @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public RemoveRoleDto removeRole(@RequestBody RemoveRoleDto removeRoleDto) {
+        return dtoMapper.mapToRemoveRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto)));
+    }
 }

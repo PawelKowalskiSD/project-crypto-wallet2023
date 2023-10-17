@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.domain.dto;
 
+import com.app.crypto.wallet.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ public class ReadUserDto {
     private String username;
     private String mailAddressee;
     private boolean isEnabled;
-    private String role;
+    private List<Role> role;
     private List<ReadWalletDto> walletList = new ArrayList<>();
 
 }

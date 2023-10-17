@@ -3,6 +3,7 @@ package com.app.crypto.wallet.service;
 import com.app.crypto.wallet.domain.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,7 +16,7 @@ public class UserService {
     }
 
     public List<User> getAllUser() {
-        return null;
+        return new ArrayList<>();
     }
 
     public User getUserById(Long userId) {

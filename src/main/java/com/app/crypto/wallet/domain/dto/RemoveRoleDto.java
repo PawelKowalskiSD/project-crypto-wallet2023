@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddRoleDto {
+public class RemoveRoleDto {
     private String roleName;
 }

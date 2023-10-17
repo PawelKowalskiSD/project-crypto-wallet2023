@@ -24,4 +24,8 @@ public class RoleService {
     public Role getRoleById(Long roleId) {
         return new Role();
     }
+
+    public Role removeUserRoles(Role role) {
+        return role;
+    }
 }

@@ -21,22 +21,22 @@ public class CoinController {
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public SearchCoinDto searchCoin(@RequestBody SearchCoinDto searchCoinDto) {
-        return dtoMapper.mapSearchCoinToSearchCoinDto(coinGeckoClientService.searchCoin(dtoMapper.mapSearchCoinDtoToSearchCoin(searchCoinDto)));
+        return dtoMapper.mapToSearchCoinDto(coinGeckoClientService.searchCoin(dtoMapper.mapToCoin(searchCoinDto)));
     }
 
     @GetMapping(value = "/{coinId}")
     public ReadCoinDto getCoin(@PathVariable Long coinId) {
-        return dtoMapper.mapCoinDtoToCoin(coinService.findCoinById(coinId));
+        return dtoMapper.mapToReadCoinDto(coinService.findCoinById(coinId));
     }
 
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
     public AddCoinDto addCoin(@RequestBody AddCoinDto addCoinDto) {
-        return dtoMapper.mapCoinToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapAddCoinDtoToCoin(addCoinDto)));
+        return dtoMapper.mapToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto)));
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)
     public SellCoinDto sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) {
-        return dtoMapper.mapCoinToSellCoinDto(coinService.sellCoin(dtoMapper.mapCoinDtoToSellCoin(sellCoinDto)));
+        return dtoMapper.mapToSellCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto)));
     }
 }

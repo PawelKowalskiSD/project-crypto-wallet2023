@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class VerificationKey {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long verifyKeyId;
+
     private String value;
+
+    @OneToOne
+    @JoinColumn(name = "USER_ID")
     private User user;
 }

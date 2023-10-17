@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,23 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 public class Wallet {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long walletId;
     private String walletName;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
     private User user;
+
+    @OneToMany(
+            targetEntity = Coin.class,
+            mappedBy = "wallet",
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.LAZY)
     private List<Coin> coinList = new ArrayList<>();
 
     public Wallet(String walletName) {

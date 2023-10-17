@@ -13,5 +13,4 @@ public class AddCoinDto {
     private String coinName;
     private BigDecimal quantity;
     private long walletId;
-    private long userId;
 }
