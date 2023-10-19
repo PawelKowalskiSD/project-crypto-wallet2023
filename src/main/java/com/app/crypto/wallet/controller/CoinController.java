@@ -11,6 +11,7 @@ import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.CoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -22,23 +23,23 @@ public class CoinController {
     private final CoinGeckoClientService coinGeckoClientService;
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SearchCoinDto searchCoin(@RequestBody SearchCoinDto searchCoinDto) {
-        return dtoMapper.mapToSearchCoinDto(coinGeckoClientService.searchCoin(dtoMapper.mapToCoin(searchCoinDto)));
+    public ResponseEntity<SearchCoinDto> searchCoin(@RequestBody SearchCoinDto searchCoinDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToSearchCoinDto(coinGeckoClientService.searchCoin(dtoMapper.mapToCoin(searchCoinDto))));
     }
 
     @GetMapping(value = "/{coinId}")
-    public ReadCoinDto getCoin(@PathVariable Long coinId) throws CoinNotFoundException {
-        return dtoMapper.mapToReadCoinDto(coinService.findCoinById(coinId));
+    public ResponseEntity<ReadCoinDto> getCoin(@PathVariable Long coinId) throws CoinNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinService.findCoinById(coinId)));
     }
 
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public AddCoinDto addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException {
-        return dtoMapper.mapToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto)));
+    public ResponseEntity<AddCoinDto> addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto))));
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SellCoinDto sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) throws WalletNotFoundException {
-        return dtoMapper.mapToSellCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto)));
+    public ResponseEntity<SellCoinDto> sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) throws WalletNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToSellCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto))));
     }
 }

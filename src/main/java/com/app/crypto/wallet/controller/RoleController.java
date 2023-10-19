@@ -9,6 +9,7 @@ import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,27 +22,27 @@ public class RoleController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public List<ReadRoleDto> getAllRoles() {
-        return dtoMapper.mapToReadRoleDtoList(roleService.getRoles());
+    public ResponseEntity<List<ReadRoleDto>> getAllRoles() {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDtoList(roleService.getRoles()));
     }
 
     @GetMapping(value = "/{roleId}")
-    public ReadRoleDto getRole(@PathVariable Long roleId) throws RoleNotFoundException {
-        return dtoMapper.mapToReadRoleDto(roleService.getRoleById(roleId));
+    public ResponseEntity<ReadRoleDto> getRole(@PathVariable Long roleId) throws RoleNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDto(roleService.getRoleById(roleId)));
     }
 
     @PostMapping(value = "/creates", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CreateRoleDto createRole(@RequestBody CreateRoleDto createRoleDto) {
-        return dtoMapper.mapToCreateRoleDto(roleService.createNewRole(dtoMapper.mapToRole(createRoleDto)));
+    public ResponseEntity<CreateRoleDto> createRole(@RequestBody CreateRoleDto createRoleDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToCreateRoleDto(roleService.createNewRole(dtoMapper.mapToRole(createRoleDto))));
     }
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public AddRoleDto addRole(@RequestBody AddRoleDto addRoleDto) {
-        return dtoMapper.mapToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto)));
+    public ResponseEntity<AddRoleDto> addRole(@RequestBody AddRoleDto addRoleDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto))));
     }
 
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RemoveRoleDto removeRole(@RequestBody RemoveRoleDto removeRoleDto) {
-        return dtoMapper.mapToRemoveRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto)));
+    public ResponseEntity<RemoveRoleDto> removeRole(@RequestBody RemoveRoleDto removeRoleDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToRemoveRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto))));
     }
 }

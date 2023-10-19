@@ -77,6 +77,15 @@ public class User {
         this.mailAddressee = mailAddressee;
     }
 
+    public User(long userId, String username, String password, String mailAddressee, boolean isEnabled, List<Role> roles) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.mailAddressee = mailAddressee;
+        this.isEnabled = isEnabled;
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "User{" +

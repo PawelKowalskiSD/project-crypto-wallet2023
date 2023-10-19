@@ -29,9 +29,8 @@ public class Role {
         this.roleName = roleName;
     }
 
-
-    public Role(String roleName, List<User> users) {
+    public Role(long roleId, String roleName) {
+        this.roleId = roleId;
         this.roleName = roleName;
-        this.users = users;
     }
 }

@@ -8,6 +8,7 @@ import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,27 +21,29 @@ public class WalletController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public List<ReadWalletDto> getAllWallets() {
-        return dtoMapper.mapToReadWalletDtoList(walletService.findAllWallets());
+    public ResponseEntity<List<ReadWalletDto>> getAllWallets() {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDtoList(walletService.findAllWallets()));
     }
 
     @GetMapping(value = "/{walletId}")
-    public ReadWalletDto getWallet(@PathVariable Long walletId) throws WalletNotFoundException {
-        return dtoMapper.mapToReadWalletDto(walletService.findWallet(walletId));
+    public ResponseEntity<ReadWalletDto> getWallet(@PathVariable Long walletId) throws WalletNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.findWallet(walletId)));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createWallet(@RequestBody CreateWalletDto createWalletDto) {
+    public ResponseEntity<Void> createWallet(@RequestBody CreateWalletDto createWalletDto) {
         walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto));
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public EditWalletDto editWallet(@RequestBody EditWalletDto editWalletDto) {
-        return dtoMapper.mapToEditWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto)));
+    public ResponseEntity<EditWalletDto> editWallet(@RequestBody EditWalletDto editWalletDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToEditWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto))));
     }
 
     @DeleteMapping(value = "/{walletId}")
-    public void deleteWallet(@PathVariable Long walletId) {
+    public ResponseEntity<Void> deleteWallet(@PathVariable Long walletId) {
         walletService.deleteWalletByWalletId(walletId);
+        return ResponseEntity.ok().build();
     }
 }

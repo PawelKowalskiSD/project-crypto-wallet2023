@@ -7,6 +7,7 @@ import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,20 +20,21 @@ public class UserController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public List<ReadUserDto> getAllUsers() {
-        return dtoMapper.mapToReadUserDtoList(userService.getAllUser());
+    public ResponseEntity<List<ReadUserDto>> getAllUsers() {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadUserDtoList(userService.getAllUser()));
     }
     @GetMapping(value = "{userId}")
-    public ReadUserDto getUser(@PathVariable Long userId) throws UserNotFoundException {
-     return dtoMapper.mapToReadUserDto(userService.getUserById(userId));
+    public ResponseEntity<ReadUserDto> getUser(@PathVariable Long userId) throws UserNotFoundException {
+     return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.getUserById(userId)));
     }
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ReadUserDto editAccount(@RequestBody EditUserDto editUserDto) throws UserNotFoundException {
-        return dtoMapper.mapToReadUserDto(userService.editUserAccount(dtoMapper.mapToUser(editUserDto)));
+    public ResponseEntity<ReadUserDto> editAccount(@RequestBody EditUserDto editUserDto) throws UserNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.editUserAccount(dtoMapper.mapToUser(editUserDto))));
     }
 
     @DeleteMapping
-    public void deleteUser() {
+    public ResponseEntity<Void> deleteUser() {
         userService.deleteUserAccount();
+        return ResponseEntity.ok().build();
     }
 }

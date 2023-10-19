@@ -6,18 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import java.util.Arrays;
+
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchCoinDto {
-    @JsonProperty("name")
-    private String coinName;
+public class SearchDto {
+    @JsonProperty("coins")
+    private SearchCoinDto[] searchCoinDto;
 
     @Override
     public String toString() {
-        return "SearchCoinDto{" +
-                "coinName='" + coinName + '\'' +
+        return "SearchDto{" +
+                "searchCoinDto=" + Arrays.toString(searchCoinDto) +
                 '}';
     }
 }
