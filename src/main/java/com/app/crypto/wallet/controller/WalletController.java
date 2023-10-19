@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.CreateWalletDto;
 import com.app.crypto.wallet.domain.dto.EditWalletDto;
 import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class WalletController {
     }
 
     @GetMapping(value = "/{walletId}")
-    public ReadWalletDto getWallet(@PathVariable Long walletId) {
+    public ReadWalletDto getWallet(@PathVariable Long walletId) throws WalletNotFoundException {
         return dtoMapper.mapToReadWalletDto(walletService.findWallet(walletId));
     }
 

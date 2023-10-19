@@ -60,4 +60,35 @@ public class User {
     public User(long userId) {
         this.userId = userId;
     }
+
+    public User(long userId, String username, String mailAddressee, boolean isEnabled, List<Role> roles, List<Wallet> walletList) {
+        this.userId = userId;
+        this.username = username;
+        this.mailAddressee = mailAddressee;
+        this.isEnabled = isEnabled;
+        this.roles = roles;
+        this.walletList = walletList;
+    }
+
+    public User(long userId, String username, String password, String mailAddressee) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.mailAddressee = mailAddressee;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", mailAddressee='" + mailAddressee + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", roles=" + roles +
+                ", walletList=" + walletList +
+                ", verificationKey=" + verificationKey +
+                ", jwtTokens=" + jwtTokens +
+                '}';
+    }
 }

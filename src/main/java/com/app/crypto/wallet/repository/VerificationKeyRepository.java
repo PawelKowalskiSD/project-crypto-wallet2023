@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationKeyRepository extends CrudRepository<VerificationKey, Long> {
+
+    VerificationKey findByValue(String value);
 }

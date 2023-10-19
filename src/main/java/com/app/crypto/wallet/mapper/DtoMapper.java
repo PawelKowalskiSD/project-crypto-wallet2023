@@ -2,6 +2,7 @@ package com.app.crypto.wallet.mapper;
 
 import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
+import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class DtoMapper {
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
+                editUserDto.getUserId(),
                 editUserDto.getUsername(),
                 editUserDto.getPassword(),
                 editUserDto.getMailAddressee());
@@ -75,6 +77,7 @@ public class DtoMapper {
 
     public Wallet mapToWallet(EditWalletDto editWalletDto) {
         return new Wallet(
+                editWalletDto.getWalletId(),
                 editWalletDto.getWalletName());
     }
 
@@ -88,6 +91,7 @@ public class DtoMapper {
 
     public EditWalletDto mapToEditWalletDto(Wallet wallet) {
         return new EditWalletDto(
+                wallet.getWalletId(),
                 wallet.getWalletName(),
                 wallet.getUser().getUserId());
     }
@@ -107,7 +111,7 @@ public class DtoMapper {
                 searchCoinDto.getCoinName());
     }
 
-    public Coin mapToCoin(AddCoinDto addCoinDto) {
+    public Coin mapToCoin(AddCoinDto addCoinDto) throws WalletNotFoundException {
         Wallet wallet = walletService.findWallet(addCoinDto.getWalletId());
         return new Coin(
                 addCoinDto.getCoinName(),
@@ -115,7 +119,7 @@ public class DtoMapper {
                 wallet);
     }
 
-    public Coin mapToCoin(SellCoinDto sellCoinDto) {
+    public Coin mapToCoin(SellCoinDto sellCoinDto) throws WalletNotFoundException {
         Wallet wallet = walletService.findWallet(sellCoinDto.getWalletId());
         return new Coin(
                 sellCoinDto.getCoinName(),

@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.dto.AddRoleDto;
 import com.app.crypto.wallet.domain.dto.CreateRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
 import com.app.crypto.wallet.domain.dto.RemoveRoleDto;
+import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class RoleController {
     }
 
     @GetMapping(value = "/{roleId}")
-    public ReadRoleDto getRole(@PathVariable Long roleId) {
+    public ReadRoleDto getRole(@PathVariable Long roleId) throws RoleNotFoundException {
         return dtoMapper.mapToReadRoleDto(roleService.getRoleById(roleId));
     }
 

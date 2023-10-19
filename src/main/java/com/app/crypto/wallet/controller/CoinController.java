@@ -5,6 +5,8 @@ import com.app.crypto.wallet.domain.dto.AddCoinDto;
 import com.app.crypto.wallet.domain.dto.ReadCoinDto;
 import com.app.crypto.wallet.domain.dto.SellCoinDto;
 import com.app.crypto.wallet.domain.dto.SearchCoinDto;
+import com.app.crypto.wallet.exceptions.CoinNotFoundException;
+import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.CoinService;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +27,18 @@ public class CoinController {
     }
 
     @GetMapping(value = "/{coinId}")
-    public ReadCoinDto getCoin(@PathVariable Long coinId) {
+    public ReadCoinDto getCoin(@PathVariable Long coinId) throws CoinNotFoundException {
         return dtoMapper.mapToReadCoinDto(coinService.findCoinById(coinId));
     }
 
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public AddCoinDto addCoin(@RequestBody AddCoinDto addCoinDto) {
+    public AddCoinDto addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException {
         return dtoMapper.mapToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto)));
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SellCoinDto sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) {
+    public SellCoinDto sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) throws WalletNotFoundException {
         return dtoMapper.mapToSellCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto)));
     }
 }
