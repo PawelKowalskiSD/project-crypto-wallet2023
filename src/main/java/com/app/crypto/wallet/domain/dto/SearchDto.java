@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -14,12 +14,5 @@ import java.util.Arrays;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchDto {
     @JsonProperty("coins")
-    private SearchCoinDto[] searchCoinDto;
-
-    @Override
-    public String toString() {
-        return "SearchDto{" +
-                "searchCoinDto=" + Arrays.toString(searchCoinDto) +
-                '}';
-    }
+    private List<SearchCoinDto> coins;
 }

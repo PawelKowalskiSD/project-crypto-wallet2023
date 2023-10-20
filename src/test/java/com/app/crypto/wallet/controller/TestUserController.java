@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TestUserController {
 
@@ -62,17 +61,17 @@ public class TestUserController {
         UserService service = mock(UserService.class);
         DtoMapper dto = mock(DtoMapper.class);
         UserController userController = new UserController(service, dto);
-        User user = new User(/*1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>()*/);
-        EditUserDto editUserDto = new EditUserDto("Alan");
-        ReadUserDto readUserDto = new ReadUserDto(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
-        when(dto.mapToReadUserDto(user)).thenReturn(readUserDto);
-        when(service.editUserAccount(dto.mapToUser(editUserDto))).thenReturn(user);
+        EditUserDto requestUserDto = new EditUserDto("Alan");
+        User userToModify = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        when(dto.mapToUser(requestUserDto)).thenReturn(userToModify);
+        User modifiedUser = new User(1L, "Alan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        when(service.editUserAccount(userToModify)).thenReturn(modifiedUser);
+        ReadUserDto responseUserDto = new ReadUserDto(1L, "Alan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        when(dto.mapToReadUserDto(modifiedUser)).thenReturn(responseUserDto);
         //When
-        ReadUserDto userDto = userController.editAccount(editUserDto).getBody();
-        System.out.println(user.getUsername());
-        System.out.println(userDto.getUsername());
-        System.out.println(readUserDto.getUsername());
+        ReadUserDto result = userController.editAccount(requestUserDto).getBody();
         //Then
-        assertEquals(editUserDto.getUsername(), userDto.getUsername());
+        assertEquals("Alan", result.getUsername());
+        verify(service, times(1)).editUserAccount(userToModify);
     }
 }

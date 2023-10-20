@@ -1,17 +1,13 @@
-package com.app.crypto.wallet.domain.dto;
+package com.app.crypto.wallet.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchCoinDto {
-
+public class SearchCoin {
     @JsonProperty("id")
     private String coinId;
 

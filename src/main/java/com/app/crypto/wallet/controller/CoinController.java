@@ -1,10 +1,7 @@
 package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.client.service.CoinGeckoClientService;
-import com.app.crypto.wallet.domain.dto.AddCoinDto;
-import com.app.crypto.wallet.domain.dto.ReadCoinDto;
-import com.app.crypto.wallet.domain.dto.SellCoinDto;
-import com.app.crypto.wallet.domain.dto.SearchCoinDto;
+import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.CoinNotFoundException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -14,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/coins")
@@ -22,9 +21,9 @@ public class CoinController {
     private final DtoMapper dtoMapper;
     private final CoinGeckoClientService coinGeckoClientService;
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SearchCoinDto> searchCoin(@RequestBody SearchCoinDto searchCoinDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToSearchCoinDto(coinGeckoClientService.searchCoin(dtoMapper.mapToCoin(searchCoinDto))));
+    @GetMapping(value = "/search/{coin}")
+    public ResponseEntity<SearchDto> searchCoin(@PathVariable String coin) {
+        return ResponseEntity.ok(dtoMapper.mapToSearchDto(coinGeckoClientService.searchCoin(coin)));
     }
 
     @GetMapping(value = "/{coinId}")
