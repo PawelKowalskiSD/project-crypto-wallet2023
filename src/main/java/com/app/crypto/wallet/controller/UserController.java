@@ -32,9 +32,9 @@ public class UserController {
         return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.editUserAccount(dtoMapper.mapToUser(editUserDto))));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUser() {
-        userService.deleteUserAccount();
+    @DeleteMapping(value = "/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUserAccount(userId);
         return ResponseEntity.ok().build();
     }
 }

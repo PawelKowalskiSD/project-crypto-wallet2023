@@ -16,50 +16,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class TestUserController {
+    private final UserService service = mock(UserService.class);
+    private final DtoMapper dto = mock(DtoMapper.class);
 
 
     @Test
     void shouldGetAllUsers() {
         //Given
-        UserService service = mock(UserService.class);
-        DtoMapper dto = mock(DtoMapper.class);
         UserController userController = new UserController(service, dto);
-        List<User> userList = new ArrayList<>();
-        List<ReadUserDto> userDtoList = new ArrayList<>();
-        userDtoList.add(new ReadUserDto(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>()));
-        userDtoList.add(new ReadUserDto(2L, "Tom", "mail@2p", true, new ArrayList<>(), new ArrayList<>()));
-        when(dto.mapToReadUserDtoList(userList)).thenReturn(userDtoList);
+        List<User> databaseUsers = new ArrayList<>();
+        databaseUsers.add(new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>()));
+        databaseUsers.add(new User(2L, "Tom", "mail@2p", true, new ArrayList<>(), new ArrayList<>()));
+        when(service.getAllUser()).thenReturn(databaseUsers);
+        List<ReadUserDto> responseUsersDto = new ArrayList<>();
+        responseUsersDto.add(new ReadUserDto(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>()));
+        responseUsersDto.add(new ReadUserDto(2L, "Tom", "mail@2p", true, new ArrayList<>(), new ArrayList<>()));
+        when(dto.mapToReadUserDtoList(databaseUsers)).thenReturn(responseUsersDto);
         //When
         List<ReadUserDto> result = userController.getAllUsers().getBody();
         //Then
-        assertEquals(userDtoList, result);
+        assertEquals(2, result.size());
+        verify(service, times(1)).getAllUser();
     }
 
     @Test
     void shouldGetUser() throws UserNotFoundException {
         //Given
-        UserService service = mock(UserService.class);
-        DtoMapper dto = mock(DtoMapper.class);
         UserController userController = new UserController(service, dto);
-        User user = new User();
-        List<ReadUserDto> userDtoList = new ArrayList<>();
-        userDtoList.add(new ReadUserDto(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>()));
-        userDtoList.add(new ReadUserDto(2L, "Tom", "mail@2p", true, new ArrayList<>(), new ArrayList<>()));
-        when(dto.mapToReadUserDto(user)).thenReturn(userDtoList.get(0));
-        when(service.getUserById(userDtoList.get(0).getUserId())).thenReturn(user);
+        User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        Long requestUserId = 1L;
+        when(service.getUserById(requestUserId)).thenReturn(databaseJan);
+        ReadUserDto responseUserDto = new ReadUserDto(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        when(dto.mapToReadUserDto(databaseJan)).thenReturn(responseUserDto);
         //When
-        ReadUserDto userDto = userController.getUser(1L).getBody();
-        System.out.println(userDto);
-        System.out.println(userDtoList.get(0));
+        ReadUserDto result = userController.getUser(requestUserId).getBody();
         //Then
-        assertEquals(userDtoList.get(0), userDto);
+        assertEquals(1L, result.getUserId());
+        verify(service, times(1)).getUserById(databaseJan.getUserId());
     }
 
     @Test
     void shouldEditAccount() throws UserNotFoundException {
         //Given
-        UserService service = mock(UserService.class);
-        DtoMapper dto = mock(DtoMapper.class);
         UserController userController = new UserController(service, dto);
         EditUserDto requestUserDto = new EditUserDto("Alan");
         User userToModify = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
@@ -73,5 +71,17 @@ public class TestUserController {
         //Then
         assertEquals("Alan", result.getUsername());
         verify(service, times(1)).editUserAccount(userToModify);
+    }
+
+    @Test
+    void shouldDeleteUser() throws UserNotFoundException {
+        //Given
+        UserController userController = new UserController(service, dto);
+        User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
+        Long requestUserId = 1L;
+
+        //When
+
+        //Then
     }
 }
