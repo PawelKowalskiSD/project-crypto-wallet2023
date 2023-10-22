@@ -27,9 +27,10 @@ public class WalletService {
         return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
     }
 
-    public void createNewWallet(Wallet wallet) {
+    public Wallet createNewWallet(Wallet wallet) {
         wallet.setWalletName(wallet.getWalletName());
         walletRepository.save(wallet);
+        return wallet;
     }
 
     public Wallet editWallet(Wallet wallet) {

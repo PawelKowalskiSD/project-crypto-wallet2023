@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class CreateWalletDto {
     private String walletName;
     private long userId;
+
+    public CreateWalletDto(String walletName) {
+        this.walletName = walletName;
+    }
 }

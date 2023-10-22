@@ -38,7 +38,7 @@ public class CoinController {
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SellCoinDto> sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) throws WalletNotFoundException {
-        return ResponseEntity.ok().body(dtoMapper.mapToSellCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto))));
+    public ResponseEntity<ReadCoinDto> sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinService.sellCoin(dtoMapper.mapToCoin(sellCoinDto))));
     }
 }

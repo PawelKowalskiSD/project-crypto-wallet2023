@@ -15,4 +15,10 @@ public class SellCoinDto {
     private BigDecimal currentPrice;
     private long walletId;
     private BigDecimal totalValueOfCoinsSold;
+
+    public SellCoinDto(String coinName, BigDecimal quantity, BigDecimal currentPrice) {
+        this.coinName = coinName;
+        this.quantity = quantity;
+        this.currentPrice = currentPrice;
+    }
 }

@@ -7,7 +7,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditWalletDto {
-    private long walletId;
     private String walletName;
-    private long userId;
 }

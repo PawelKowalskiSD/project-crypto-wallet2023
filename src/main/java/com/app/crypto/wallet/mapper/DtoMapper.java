@@ -81,7 +81,6 @@ public class DtoMapper {
 
     public Wallet mapToWallet(EditWalletDto editWalletDto) {
         return new Wallet(
-                editWalletDto.getWalletId(),
                 editWalletDto.getWalletName());
     }
 
@@ -93,12 +92,6 @@ public class DtoMapper {
                 mapToReadCoinDtoList(wallet.getCoinList()));
     }
 
-    public EditWalletDto mapToEditWalletDto(Wallet wallet) {
-        return new EditWalletDto(
-                wallet.getWalletId(),
-                wallet.getWalletName(),
-                wallet.getUser().getUserId());
-    }
 
     public List<ReadWalletDto> mapToReadWalletDtoList(List<Wallet> wallets) {
         return wallets.stream()
@@ -118,15 +111,11 @@ public class DtoMapper {
                 wallet);
     }
 
-    public Coin mapToCoin(SellCoinDto sellCoinDto) throws WalletNotFoundException {
-        Wallet wallet = walletService.findWallet(sellCoinDto.getWalletId());
+    public Coin mapToCoin(SellCoinDto sellCoinDto) {
         return new Coin(
                 sellCoinDto.getCoinName(),
                 sellCoinDto.getQuantity(),
-                sellCoinDto.getCurrentPrice(),
-                sellCoinDto.getAverageSalePrice(),
-                sellCoinDto.getTotalValueOfCoinsSold(),
-                wallet);
+                sellCoinDto.getCurrentPrice());
     }
 
     public AddCoinDto mapToAddCoinDto(Coin coin) {
@@ -134,16 +123,6 @@ public class DtoMapper {
                 coin.getCoinName(),
                 coin.getQuantity(),
                 coin.getWallet().getWalletId());
-    }
-
-    public SellCoinDto mapToSellCoinDto(Coin coin) {
-        return new SellCoinDto(
-                coin.getCoinName(),
-                coin.getQuantity(),
-                coin.getCurrentPrice(),
-                coin.getAverageSalePrice(),
-                coin.getWallet().getWalletId(),
-                coin.getTotalValueOfCoinsSold());
     }
 
     public ReadCoinDto mapToReadCoinDto(Coin coin) {

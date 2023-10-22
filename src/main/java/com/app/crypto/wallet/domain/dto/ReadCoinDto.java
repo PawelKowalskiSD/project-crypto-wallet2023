@@ -17,4 +17,11 @@ public class ReadCoinDto {
     private BigDecimal averagePurchasePrice;
     private BigDecimal averageSalePrice;
     private BigDecimal currentPrice;
+
+    public ReadCoinDto(long coinId, String coinName, String symbol, BigDecimal currentPrice) {
+        this.coinId = coinId;
+        this.coinName = coinName;
+        this.symbol = symbol;
+        this.currentPrice = currentPrice;
+    }
 }

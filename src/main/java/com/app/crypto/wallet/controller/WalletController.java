@@ -31,14 +31,14 @@ public class WalletController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createWallet(@RequestBody CreateWalletDto createWalletDto) {
-        walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ReadWalletDto> createWallet(@RequestBody CreateWalletDto createWalletDto) {
+
+        return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto))));
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EditWalletDto> editWallet(@RequestBody EditWalletDto editWalletDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToEditWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto))));
+    public ResponseEntity<ReadWalletDto> editWallet(@RequestBody EditWalletDto editWalletDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto))));
     }
 
     @DeleteMapping(value = "/{walletId}")

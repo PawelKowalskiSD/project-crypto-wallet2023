@@ -40,4 +40,6 @@ public class Wallet {
         this.walletId = walletId;
         this.walletName = walletName;
     }
+
+
 }

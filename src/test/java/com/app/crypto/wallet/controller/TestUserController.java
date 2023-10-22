@@ -7,7 +7,6 @@ import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class TestUserController {
         ReadUserDto result = userController.getUser(requestUserId).getBody();
         //Then
         assertEquals(1L, result.getUserId());
-        verify(service, times(1)).getUserById(databaseJan.getUserId());
+        verify(service, times(1)).getUserById(requestUserId);
     }
 
     @Test
