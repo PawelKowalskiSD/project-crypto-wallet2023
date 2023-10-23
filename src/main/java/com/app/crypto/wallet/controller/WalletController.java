@@ -32,7 +32,6 @@ public class WalletController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReadWalletDto> createWallet(@RequestBody CreateWalletDto createWalletDto) {
-
         return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto))));
     }
 

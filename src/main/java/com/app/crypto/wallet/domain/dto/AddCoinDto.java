@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class AddCoinDto {
     private String coinName;
+    private String symbol;
     private BigDecimal quantity;
+    private BigDecimal currentPrice;
     private long walletId;
 }

@@ -73,14 +73,14 @@ public class TestUserController {
     }
 
     @Test
-    void shouldDeleteUser() throws UserNotFoundException {
+    void shouldDeleteUser() {
         //Given
         UserController userController = new UserController(service, dto);
         User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
-        Long requestUserId = 1L;
-
+        long requestUserId = 1L;
         //When
-
+        userController.deleteUser(requestUserId);
         //Then
+        verify(service, times(1)).deleteUserAccount(databaseJan.getUserId());
     }
 }

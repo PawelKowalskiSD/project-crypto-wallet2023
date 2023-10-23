@@ -3,7 +3,6 @@ package com.app.crypto.wallet.mapper;
 import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
-import com.app.crypto.wallet.service.RoleService;
 import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 @Service
 public class DtoMapper {
     private final WalletService walletService;
-    private final RoleService roleService;
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
@@ -118,22 +116,13 @@ public class DtoMapper {
                 sellCoinDto.getCurrentPrice());
     }
 
-    public AddCoinDto mapToAddCoinDto(Coin coin) {
-        return new AddCoinDto(
-                coin.getCoinName(),
-                coin.getQuantity(),
-                coin.getWallet().getWalletId());
-    }
-
     public ReadCoinDto mapToReadCoinDto(Coin coin) {
         return new ReadCoinDto(
                 coin.getCoinId(),
                 coin.getCoinName(),
                 coin.getSymbol(),
                 coin.getQuantity(),
-                coin.getCurrentPrice(),
-                coin.getAveragePurchasePrice(),
-                coin.getAverageSalePrice());
+                coin.getCurrentPrice());
     }
 
     public List<ReadCoinDto> mapToReadCoinDtoList(List<Coin> coinList) {
@@ -143,15 +132,8 @@ public class DtoMapper {
                         c.getCoinName(),
                         c.getSymbol(),
                         c.getQuantity(),
-                        c.getAveragePurchasePrice(),
-                        c.getAverageSalePrice(),
                         c.getCurrentPrice()))
                 .collect(Collectors.toList());
-    }
-
-    public Role mapToRole(CreateRoleDto createRoleDto) {
-        return new Role(
-                createRoleDto.getRoleName());
     }
 
     public Role mapToRole(AddRoleDto addRoleDto) {
@@ -162,11 +144,6 @@ public class DtoMapper {
     public Role mapToRole(RemoveRoleDto removeRoleDto) {
         return new Role(
                 removeRoleDto.getRoleName());
-    }
-
-    public CreateRoleDto mapToCreateRoleDto(Role role) {
-        return new CreateRoleDto(
-                role.getRoleName());
     }
 
     public AddRoleDto mapToAddRoleDto(Role role) {
@@ -196,5 +173,14 @@ public class DtoMapper {
         return new SearchDto(searchCoin.getCoins().stream()
                 .map(c -> new SearchCoinDto(c.getCoinId(), c.getCoinName(), c.getSymbol(), c.getMarketCapRank()))
                 .collect(Collectors.toList()));
+    }
+
+    public AddCoinDto mapToAddCoinDto(Coin coin) {
+        return new AddCoinDto(
+                coin.getCoinName(),
+                coin.getSymbol(),
+                coin.getQuantity(),
+                coin.getCurrentPrice(),
+                coin.getWallet().getWalletId());
     }
 }

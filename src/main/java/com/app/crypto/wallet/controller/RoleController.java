@@ -1,7 +1,6 @@
 package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.domain.dto.AddRoleDto;
-import com.app.crypto.wallet.domain.dto.CreateRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
 import com.app.crypto.wallet.domain.dto.RemoveRoleDto;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
@@ -31,18 +30,13 @@ public class RoleController {
         return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDto(roleService.getRoleById(roleId)));
     }
 
-    @PostMapping(value = "/creates", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CreateRoleDto> createRole(@RequestBody CreateRoleDto createRoleDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToCreateRoleDto(roleService.createNewRole(dtoMapper.mapToRole(createRoleDto))));
-    }
-
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AddRoleDto> addRole(@RequestBody AddRoleDto addRoleDto) {
+    public ResponseEntity<AddRoleDto> addRoleToUser(@RequestBody AddRoleDto addRoleDto) {
         return ResponseEntity.ok().body(dtoMapper.mapToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto))));
     }
 
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RemoveRoleDto> removeRole(@RequestBody RemoveRoleDto removeRoleDto) {
+    public ResponseEntity<RemoveRoleDto> removeRoleFromUser(@RequestBody RemoveRoleDto removeRoleDto) {
         return ResponseEntity.ok().body(dtoMapper.mapToRemoveRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto))));
     }
 }

@@ -86,6 +86,16 @@ public class User {
         this.roles = roles;
     }
 
+    public User(long userId, String username, String password) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+    }
+
+
+
+
+
     @Override
     public String toString() {
         return "User{" +

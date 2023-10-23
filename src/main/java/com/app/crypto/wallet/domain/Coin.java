@@ -61,4 +61,20 @@ public class Coin {
         this.quantity = quantity;
         this.currentPrice = currentPrice;
     }
+
+    public Coin(long coinId, String coinName, BigDecimal quantity, BigDecimal currentPrice) {
+        this.coinId = coinId;
+        this.coinName = coinName;
+        this.quantity = quantity;
+        this.currentPrice = currentPrice;
+    }
+
+    public Coin(long coinId, String coinName, String symbol, BigDecimal quantity, BigDecimal currentPrice, Wallet wallet) {
+        this.coinId = coinId;
+        this.coinName = coinName;
+        this.symbol = symbol;
+        this.quantity = quantity;
+        this.currentPrice = currentPrice;
+        this.wallet = wallet;
+    }
 }

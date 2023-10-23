@@ -90,4 +90,16 @@ public class TestWalletController {
         assertEquals("my wallet", result.getWalletName());
         verify(service, times(1)).editWallet(walletToModify);
     }
+
+    @Test
+    void shouldDeleteWallet() {
+        //Given
+        WalletController walletController = new WalletController(service, dto);
+        Wallet walletInDatabase = new Wallet(1L, "first wallet");
+        long requestWalletId = 1L;
+        //When
+        walletController.deleteWallet(requestWalletId);
+        //Then
+        verify(service, times(1)).deleteWalletByWalletId(walletInDatabase.getWalletId());
+    }
 }
