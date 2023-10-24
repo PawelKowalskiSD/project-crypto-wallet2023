@@ -18,6 +18,7 @@ public class JwtToken {
     private long jwtTokenId;
     private String token;
     private boolean expired;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;

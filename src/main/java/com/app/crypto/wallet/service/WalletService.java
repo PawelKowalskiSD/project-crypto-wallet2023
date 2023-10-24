@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class WalletService {
-
     private final WalletRepository walletRepository;
 
     public List<Wallet> findAllWallets() {

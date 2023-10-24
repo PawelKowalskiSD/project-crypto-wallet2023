@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +34,10 @@ public class DtoMapper {
         return new User(
                 createUserDto.getUsername(),
                 createUserDto.getPassword(),
-                createUserDto.getMailAddressee());
+                createUserDto.getMailAddressee(),
+                createUserDto.getRoles().stream()
+                        .map(r -> new Role(r.getRoleName()))
+                        .collect(Collectors.toList()));
     }
 
     public AuthResponseDto mapToAuthResponseDto(JwtToken token) {
@@ -42,12 +46,13 @@ public class DtoMapper {
     }
 
     public CreateUserDto mapToCreateUserDto(User user) {
-        List<String> roles = List.of("USER");
         return new CreateUserDto(
                 user.getUsername(),
                 user.getPassword(),
                 user.getMailAddressee(),
-                roles);
+                user.getRoles().stream()
+                        .map(u -> new ReadRoleDto(u.getRoleName()))
+                        .collect(Collectors.toList()));
     }
 
     public ReadUserDto mapToReadUserDto(User user) {
@@ -136,28 +141,17 @@ public class DtoMapper {
                 .collect(Collectors.toList());
     }
 
-    public Role mapToRole(AddRoleDto addRoleDto) {
-        return new Role(
-                addRoleDto.getRoleName());
+    public List<Role> mapToRole(AddRoleDto addRoleDto) {
+        return Stream.of(new Role(addRoleDto.getRoleName()))
+                .collect(Collectors.toList());
     }
 
-    public Role mapToRole(RemoveRoleDto removeRoleDto) {
-        return new Role(
-                removeRoleDto.getRoleName());
-    }
-
-    public AddRoleDto mapToAddRoleDto(Role role) {
-        return new AddRoleDto(
-                role.getRoleName());
+    public List<Role> mapToRole(RemoveRoleDto removeRoleDto) {
+        return Stream.of(new Role(removeRoleDto.getRoleName())).collect(Collectors.toList());
     }
 
     public ReadRoleDto mapToReadRoleDto(Role role) {
         return new ReadRoleDto(
-                role.getRoleName());
-    }
-
-    public RemoveRoleDto mapToRemoveRoleDto(Role role) {
-        return new RemoveRoleDto(
                 role.getRoleName());
     }
 
@@ -167,7 +161,6 @@ public class DtoMapper {
                         r.getRoleName()))
                 .collect(Collectors.toList());
     }
-
 
     public SearchDto mapToSearchDto(Search searchCoin) {
         return new SearchDto(searchCoin.getCoins().stream()

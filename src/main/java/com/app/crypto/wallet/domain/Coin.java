@@ -30,19 +30,6 @@ public class Coin {
     @JoinColumn(name = "WALLET_ID")
     private Wallet wallet;
 
-    public Coin(String coinName, BigDecimal quantity, BigDecimal averageSalePrice, BigDecimal currentPrice, BigDecimal totalValueOfCoinsSold, Wallet wallet) {
-        this.coinName = coinName;
-        this.quantity = quantity;
-        this.averageSalePrice = averageSalePrice;
-        this.currentPrice = currentPrice;
-        this.totalValueOfCoinsSold = totalValueOfCoinsSold;
-        this.wallet = wallet;
-    }
-
-    public Coin(String coinName) {
-        this.coinName = coinName;
-    }
-
     public Coin(String coinName, BigDecimal quantity, Wallet wallet) {
         this.coinName = coinName;
         this.quantity = quantity;

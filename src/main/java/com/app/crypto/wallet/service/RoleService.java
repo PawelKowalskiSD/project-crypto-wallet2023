@@ -6,20 +6,19 @@ import com.app.crypto.wallet.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class RoleService {
-
     private final RoleRepository roleRepository;
 
     public Role createNewRole(Role role) {
         return role;
     }
 
-    public Role addRoleToUser(Role role) {
-        return role;
+    public List<Role> addRoleToUser(List<Role> roles) {
+        return roles;
     }
 
     public List<Role> getRoles() {
@@ -30,7 +29,7 @@ public class RoleService {
         return roleRepository.findByRoleId(roleId).orElseThrow(RoleNotFoundException::new);
     }
 
-    public Role removeUserRoles(Role role) {
-        return role;
+    public List<Role> removeUserRoles(List<Role> roles) {
+        return roles;
     }
 }

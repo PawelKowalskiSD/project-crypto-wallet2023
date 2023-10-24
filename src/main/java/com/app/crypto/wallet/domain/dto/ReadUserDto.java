@@ -17,16 +17,4 @@ public class ReadUserDto {
     private boolean isEnabled;
     private List<Role> role;
     private List<ReadWalletDto> walletList = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "ReadUserDto{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", mailAddressee='" + mailAddressee + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", role=" + role +
-                ", walletList=" + walletList +
-                '}';
-    }
 }

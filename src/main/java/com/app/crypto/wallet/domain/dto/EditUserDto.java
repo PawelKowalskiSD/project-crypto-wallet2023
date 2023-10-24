@@ -17,13 +17,4 @@ public class EditUserDto {
     public EditUserDto(String username) {
         this.username = username;
     }
-
-    @Override
-    public String toString() {
-        return "EditUserDto{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", mailAddressee='" + mailAddressee + '\'' +
-                '}';
-    }
 }

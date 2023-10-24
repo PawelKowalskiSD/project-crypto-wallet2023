@@ -13,5 +13,5 @@ public class CreateUserDto {
     private String username;
     private String password;
     private String mailAddressee;
-    private List<String> roles;
+    private List<ReadRoleDto> roles;
 }

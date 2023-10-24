@@ -1,9 +1,9 @@
 package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.domain.Role;
-import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.dto.AddRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
+import com.app.crypto.wallet.domain.dto.RemoveRoleDto;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
@@ -54,25 +54,44 @@ public class TestRoleController {
     void shouldAddRoleToUser() {
         //Given
         RoleController roleController = new RoleController(roleService, dto);
-        AddRoleDto requestAddRoleDto = new AddRoleDto("ADMIN");
-        Role addNewRoleToUser = new Role("ADMIN");
-        when(dto.mapToRole(requestAddRoleDto)).thenReturn(addNewRoleToUser);
-        Role userRoleInDatabase = new Role("USER");
-        when(roleService.addRoleToUser(addNewRoleToUser)).thenReturn(userRoleInDatabase);
-        AddRoleDto responseRoleDto = new AddRoleDto("ADMIN");
-        when((dto.mapToAddRoleDto(userRoleInDatabase))).thenReturn(responseRoleDto);
+        AddRoleDto requestAddRoleDtoToUser = new AddRoleDto("ADMIN");
+        List<Role> userRolesToModify = new ArrayList<>();
+        userRolesToModify.add(new Role("USER"));
+        when(dto.mapToRole(requestAddRoleDtoToUser)).thenReturn(userRolesToModify);
+        List<Role> modifiedUserRoles = new ArrayList<>();
+        userRolesToModify.add(new Role("USER"));
+        userRolesToModify.add(new Role("ADMIN"));
+        when(roleService.addRoleToUser(userRolesToModify)).thenReturn(modifiedUserRoles);
+        List<ReadRoleDto> responseRoleDto = new ArrayList<>();
+        responseRoleDto.add(new ReadRoleDto("USER"));
+        responseRoleDto.add(new ReadRoleDto("ADMIN"));
+        when((dto.mapToReadRoleDtoList(modifiedUserRoles))).thenReturn(responseRoleDto);
         //When
-        AddRoleDto result = roleController.addRoleToUser(requestAddRoleDto).getBody();
+        List<ReadRoleDto> result = roleController.addRoleToUser(requestAddRoleDtoToUser).getBody();
         //Then
-        assertEquals("ADMIN", result.getRoleName());
-        verify(roleService, times(1)).addRoleToUser(addNewRoleToUser);
+        assertEquals(2, result.size());
+        verify(roleService, times(1)).addRoleToUser(userRolesToModify);
     }
 
     @Test
     void shouldRemoveRoleFromUser() {
         //Given
         RoleController roleController = new RoleController(roleService, dto);
+        RemoveRoleDto requestRemoveRoleDto = new RemoveRoleDto("ADMIN");
+        List<Role> userRolesToModify = new ArrayList<>();
+        userRolesToModify.add(new Role("USER"));
+        userRolesToModify.add(new Role("ADMIN"));
+        when(dto.mapToRole(requestRemoveRoleDto)).thenReturn(userRolesToModify);
+        List<Role> modifiedUserRoles = new ArrayList<>();
+        userRolesToModify.add(new Role("USER"));
+        when(roleService.removeUserRoles(userRolesToModify)).thenReturn(modifiedUserRoles);
+        List<ReadRoleDto> responseRoleDto = new ArrayList<>();
+        responseRoleDto.add(new ReadRoleDto("USER"));
+        when(dto.mapToReadRoleDtoList(modifiedUserRoles)).thenReturn(responseRoleDto);
         //When
+        List<ReadRoleDto> result = roleController.removeRoleFromUser(requestRemoveRoleDto).getBody();
         //Then
+        assertEquals(1, result.size());
+        verify(roleService, times(1)).removeUserRoles(userRolesToModify);
     }
 }

@@ -92,22 +92,10 @@ public class User {
         this.password = password;
     }
 
-
-
-
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", mailAddressee='" + mailAddressee + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", roles=" + roles +
-                ", walletList=" + walletList +
-                ", verificationKey=" + verificationKey +
-                ", jwtTokens=" + jwtTokens +
-                '}';
+    public User(String username, String password, String mailAddressee, List<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.mailAddressee = mailAddressee;
+        this.roles = roles;
     }
 }

@@ -31,12 +31,12 @@ public class RoleController {
     }
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AddRoleDto> addRoleToUser(@RequestBody AddRoleDto addRoleDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToAddRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto))));
+    public ResponseEntity<List<ReadRoleDto>> addRoleToUser(@RequestBody AddRoleDto addRoleDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDtoList(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto))));
     }
 
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RemoveRoleDto> removeRoleFromUser(@RequestBody RemoveRoleDto removeRoleDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToRemoveRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto))));
+    public ResponseEntity<List<ReadRoleDto>> removeRoleFromUser(@RequestBody RemoveRoleDto removeRoleDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDtoList(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto))));
     }
 }

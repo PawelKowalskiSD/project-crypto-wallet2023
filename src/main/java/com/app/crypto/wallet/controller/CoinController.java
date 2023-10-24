@@ -1,7 +1,10 @@
 package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.client.service.CoinGeckoClientService;
-import com.app.crypto.wallet.domain.dto.*;
+import com.app.crypto.wallet.domain.dto.AddCoinDto;
+import com.app.crypto.wallet.domain.dto.ReadCoinDto;
+import com.app.crypto.wallet.domain.dto.SearchDto;
+import com.app.crypto.wallet.domain.dto.SellCoinDto;
 import com.app.crypto.wallet.exceptions.CoinNotFoundException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -10,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
