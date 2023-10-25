@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.CreateWalletDto;
 import com.app.crypto.wallet.domain.dto.EditWalletDto;
 import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.WalletService;
@@ -21,7 +22,7 @@ public class WalletController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<ReadWalletDto>> getAllWallets() {
+    public ResponseEntity<List<ReadWalletDto>> getAllWallets() throws UserPermissionsException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDtoList(walletService.findAllWallets()));
     }
 

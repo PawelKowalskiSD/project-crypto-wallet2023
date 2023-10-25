@@ -29,8 +29,8 @@ public class AuthController {
         return ResponseEntity.ok().body(dtoMapper.mapToCreateUserDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto))));
     }
 
-    @GetMapping(value = "/{verifyKey}")
-    public ResponseEntity<Void> verifyAccount(@PathVariable String verifyKey) {
+    @GetMapping(value = "/verify")
+    public ResponseEntity<Void> verifyAccount(@RequestParam String verifyKey) {
         authService.verify(verifyKey);
         return ResponseEntity.ok().build();
     }

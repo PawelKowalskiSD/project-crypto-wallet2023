@@ -1,6 +1,6 @@
 package com.app.crypto.wallet.controller;
 
-import com.app.crypto.wallet.domain.JwtToken;
+import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.dto.AuthRequestDto;
 import com.app.crypto.wallet.domain.dto.AuthResponseDto;
@@ -29,10 +29,10 @@ public class TestAuthController {
         AuthRequestDto requestDto = new AuthRequestDto("pablo", "pablo123");
         User userInDatabase = new User(1L, "pablo", "pablo123");
         when(dto.mapToUser(requestDto)).thenReturn(userInDatabase);
-        JwtToken createJwtToken = new JwtToken(1L, "dafGHhGfFGSFSDFASDGsgGFfddasdd", false, userInDatabase);
-        when(authService.getToken(userInDatabase)).thenReturn(createJwtToken);
+        Jwt createJwt = new Jwt(1L, "dafGHhGfFGSFSDFASDGsgGFfddasdd", false, userInDatabase);
+        when(authService.getToken(userInDatabase)).thenReturn(createJwt);
         AuthResponseDto responseJwtToken = new AuthResponseDto("dafGHhGfFGSFSDFASDGsgGFfddasdd");
-        when(dto.mapToAuthResponseDto(createJwtToken)).thenReturn(responseJwtToken);
+        when(dto.mapToAuthResponseDto(createJwt)).thenReturn(responseJwtToken);
         //When
         AuthResponseDto result = authController.login(requestDto).getBody();
         //Then

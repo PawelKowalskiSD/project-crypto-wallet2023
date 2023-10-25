@@ -1,9 +1,13 @@
 package com.app.crypto.wallet.service;
 
+import com.app.crypto.wallet.client.config.AuthConfig;
 import com.app.crypto.wallet.domain.Wallet;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,16 +18,19 @@ import java.util.stream.Collectors;
 @Service
 public class WalletService {
     private final WalletRepository walletRepository;
+    private final AuthConfig authConfig;
 
-    public List<Wallet> findAllWallets() {
-        long userId = 1L;
+    public List<Wallet> findAllWallets() throws UserPermissionsException {
+
+        long userId = authConfig.getUserIdFromAuthentication();
         return walletRepository.findAll().stream()
                 .filter(wallet -> wallet.getUser().getUserId() == userId)
                 .collect(Collectors.toList());
     }
 
     public Wallet findWallet(Long walletId) throws WalletNotFoundException {
-        return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
+        long userId = 1L;
+        return walletRepository.findWalletByWalletIdAndUser_UserId(walletId, userId).orElseThrow(WalletNotFoundException::new);
     }
 
     public Wallet createNewWallet(Wallet wallet) {

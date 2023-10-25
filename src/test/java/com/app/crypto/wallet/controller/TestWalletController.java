@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.domain.dto.CreateWalletDto;
 import com.app.crypto.wallet.domain.dto.EditWalletDto;
 import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.WalletService;
@@ -21,7 +22,7 @@ public class TestWalletController {
     private final DtoMapper dto = mock(DtoMapper.class);
 
     @Test
-    void shouldGetAllWallets() {
+    void shouldGetAllWallets() throws UserPermissionsException {
         //Given
         WalletController walletController = new WalletController(service, dto);
         List<Wallet> databaseWallets = new ArrayList<>();

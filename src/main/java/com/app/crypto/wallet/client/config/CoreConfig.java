@@ -1,4 +1,4 @@
-package com.app.crypto.wallet.client.service;
+package com.app.crypto.wallet.client.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

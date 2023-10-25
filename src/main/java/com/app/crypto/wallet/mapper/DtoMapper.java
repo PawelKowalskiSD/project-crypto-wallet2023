@@ -40,7 +40,7 @@ public class DtoMapper {
                         .collect(Collectors.toList()));
     }
 
-    public AuthResponseDto mapToAuthResponseDto(JwtToken token) {
+    public AuthResponseDto mapToAuthResponseDto(Jwt token) {
         return new AuthResponseDto(
                 token.getToken());
     }

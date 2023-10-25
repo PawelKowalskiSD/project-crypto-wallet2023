@@ -22,4 +22,9 @@ public class VerificationKey {
     @OneToOne
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    public VerificationKey(String value, User user) {
+        this.value = value;
+        this.user = user;
+    }
 }
