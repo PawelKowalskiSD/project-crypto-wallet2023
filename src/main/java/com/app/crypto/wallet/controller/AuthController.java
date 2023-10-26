@@ -3,6 +3,8 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.AuthRequestDto;
 import com.app.crypto.wallet.domain.dto.AuthResponseDto;
 import com.app.crypto.wallet.domain.dto.CreateUserDto;
+import com.app.crypto.wallet.domain.dto.ReadUserDto;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
 import com.app.crypto.wallet.service.UserService;
@@ -20,18 +22,18 @@ public class AuthController {
     private final DtoMapper dtoMapper;
 
     @PostMapping(value = "/log-in", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequestDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToAuthResponseDto(authService.getToken(dtoMapper.mapToUser(authRequestDto))));
+    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequestDto) throws UserNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToAuthResponseDto(authService.createJwt(dtoMapper.mapToUser(authRequestDto))));
     }
 
-    @PostMapping(value = "/sing-up", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CreateUserDto> singUp(@RequestBody CreateUserDto createUserDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToCreateUserDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto))));
+    @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReadUserDto> singUp(@RequestBody CreateUserDto createUserDto) {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto))));
     }
 
     @GetMapping(value = "/verify")
-    public ResponseEntity<Void> verifyAccount(@RequestParam String verifyKey) {
-        authService.verify(verifyKey);
+    public ResponseEntity<Void> verifyAccount(@RequestParam String verification) {
+        authService.verify(verification);
         return ResponseEntity.ok().build();
     }
 }

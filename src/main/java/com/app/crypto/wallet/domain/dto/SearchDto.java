@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchDto {
+
     @JsonProperty("coins")
     private List<SearchCoinDto> coins;
 }

@@ -13,10 +13,6 @@ import java.util.List;
 public class RoleService {
     private final RoleRepository roleRepository;
 
-    public Role createNewRole(Role role) {
-        return role;
-    }
-
     public List<Role> addRoleToUser(List<Role> roles) {
         return roles;
     }

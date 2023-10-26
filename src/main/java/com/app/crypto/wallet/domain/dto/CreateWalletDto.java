@@ -1,5 +1,7 @@
 package com.app.crypto.wallet.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,11 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateWalletDto {
-    private String walletName;
-    private long userId;
 
-    public CreateWalletDto(String walletName) {
-        this.walletName = walletName;
-    }
+    @JsonProperty("name")
+    private String walletName;
 }

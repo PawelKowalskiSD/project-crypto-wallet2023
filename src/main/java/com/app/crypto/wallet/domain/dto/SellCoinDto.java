@@ -1,5 +1,7 @@
 package com.app.crypto.wallet.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,17 +10,16 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SellCoinDto {
-    private String coinName;
-    private BigDecimal quantity;
-    private BigDecimal averageSalePrice;
-    private BigDecimal currentPrice;
-    private long walletId;
-    private BigDecimal totalValueOfCoinsSold;
 
-    public SellCoinDto(String coinName, BigDecimal quantity, BigDecimal currentPrice) {
-        this.coinName = coinName;
-        this.quantity = quantity;
-        this.currentPrice = currentPrice;
-    }
+    @JsonProperty("name")
+    private String coinName;
+
+    @JsonProperty("quantity")
+    private BigDecimal quantity;
+
+    @JsonProperty("currentPrice")
+    private BigDecimal currentPrice;
+
 }

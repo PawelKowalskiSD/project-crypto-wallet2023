@@ -46,10 +46,10 @@ public class User implements UserDetails {
     )
     private List<Wallet> walletList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private VerificationKey verificationKey;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Jwt> jwts = new ArrayList<>();
 
     public User(String username, String password, String mailAddressee) {

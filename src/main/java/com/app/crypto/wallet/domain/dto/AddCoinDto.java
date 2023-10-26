@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +11,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddCoinDto {
+
+    @JsonProperty("name")
     private String coinName;
-    private String symbol;
+
+    @JsonProperty("quantity")
     private BigDecimal quantity;
-    private BigDecimal currentPrice;
-    private long walletId;
 }

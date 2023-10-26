@@ -8,15 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchCoin {
-    @JsonProperty("id")
     private String coinId;
-
-    @JsonProperty("name")
     private String coinName;
-
-    @JsonProperty("symbol")
     private String symbol;
-
-    @JsonProperty("market_cap_rank")
     private Long marketCapRank;
 }

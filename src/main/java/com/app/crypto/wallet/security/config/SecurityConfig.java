@@ -20,8 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
 @Configuration
@@ -38,12 +37,13 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(DELETE, "/users").hasAnyRole("USER")
-                .requestMatchers(PATCH, "/users").hasAnyRole("USER")
-                .requestMatchers("/coins/**").hasAnyRole("USER")
-                .requestMatchers("/wallets/**").hasAnyRole("USER")
-                .requestMatchers("/users/**", "/wallets/**", "/roles/**", "/coins/**").hasAnyRole("ADMIN", "MODERATOR")
+                .requestMatchers( "/auth/**").permitAll()
+                .requestMatchers(DELETE, "/users").hasAuthority("USER")
+                .requestMatchers(PATCH, "/users").hasAuthority("USER")
+                .requestMatchers("/coins/**").hasAuthority("USER")
+                .requestMatchers("/wallets/**").hasAuthority("USER")
+                .requestMatchers("/wallets/**").hasAuthority("ADMIN")
+                .requestMatchers("/users/**", "/roles/**", "/coins/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated();
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

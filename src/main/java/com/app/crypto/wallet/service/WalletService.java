@@ -1,41 +1,42 @@
 package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.client.config.AuthConfig;
+import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.Wallet;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class WalletService {
     private final WalletRepository walletRepository;
+    private final UserService userService;
     private final AuthConfig authConfig;
 
     public List<Wallet> findAllWallets() throws UserPermissionsException {
-
         long userId = authConfig.getUserIdFromAuthentication();
-        return walletRepository.findAll().stream()
-                .filter(wallet -> wallet.getUser().getUserId() == userId)
-                .collect(Collectors.toList());
+        return walletRepository.findWalletsByUser_UserId(userId);
     }
 
     public Wallet findWallet(Long walletId) throws WalletNotFoundException {
-        long userId = 1L;
-        return walletRepository.findWalletByWalletIdAndUser_UserId(walletId, userId).orElseThrow(WalletNotFoundException::new);
+        return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
     }
 
-    public Wallet createNewWallet(Wallet wallet) {
-        wallet.setWalletName(wallet.getWalletName());
-        walletRepository.save(wallet);
+    public Wallet createNewWallet(Wallet wallet) throws UserPermissionsException, UserNotFoundException {
+        long userId = authConfig.getUserIdFromAuthentication();
+        User user = userService.getUserById(userId);
+        if(wallet.getWalletName() != null) {
+            wallet.setWalletName(wallet.getWalletName());
+            wallet.setUser(user);
+            walletRepository.save(wallet);
+        }
         return wallet;
     }
 

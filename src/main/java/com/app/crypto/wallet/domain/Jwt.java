@@ -23,4 +23,9 @@ public class Jwt {
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    public Jwt(String token, boolean expired, User user) {
+        this.token = token;
+        this.expired = expired;
+        this.user = user;
+    }
 }

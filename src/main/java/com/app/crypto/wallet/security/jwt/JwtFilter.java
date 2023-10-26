@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 String token = authorization.substring(7);
                 if (isJwtToken(token)) {
                     Long userId = extractUserIdFromToken(token);
-                    Jwt byToken = jwtRepository.findByToken(token);
+                    Jwt byToken = jwtRepository.findByToken(token).orElse(null);
 
                     if (byToken != null && !byToken.isExpired() && userId.equals(byToken.getUser().getUserId())) {
                         UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(token, userId);

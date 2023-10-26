@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.domain.dto.CreateWalletDto;
 import com.app.crypto.wallet.domain.dto.EditWalletDto;
 import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -57,7 +58,7 @@ public class TestWalletController {
     }
 
     @Test
-    void shouldCreateWallet() {
+    void shouldCreateWallet() throws UserPermissionsException, UserNotFoundException {
         //Given
         WalletController walletController = new WalletController(service, dto);
         CreateWalletDto createWalletDto = new CreateWalletDto("first wallet");

@@ -34,8 +34,8 @@ public class CoinController {
 
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AddCoinDto> addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException {
-        return ResponseEntity.ok().body(dtoMapper.mapToAddCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto))));
+    public ResponseEntity<ReadCoinDto> addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto))));
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)

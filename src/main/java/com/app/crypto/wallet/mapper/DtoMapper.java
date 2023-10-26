@@ -3,7 +3,6 @@ package com.app.crypto.wallet.mapper;
 import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
-import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +13,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Service
 public class DtoMapper {
-    private final WalletService walletService;
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
-                editUserDto.getUserId(),
                 editUserDto.getUsername(),
                 editUserDto.getPassword(),
                 editUserDto.getMailAddressee());
@@ -34,25 +31,13 @@ public class DtoMapper {
         return new User(
                 createUserDto.getUsername(),
                 createUserDto.getPassword(),
-                createUserDto.getMailAddressee(),
-                createUserDto.getRoles().stream()
-                        .map(r -> new Role(r.getRoleName()))
-                        .collect(Collectors.toList()));
+                createUserDto.getMailAddressee()
+        );
     }
 
     public AuthResponseDto mapToAuthResponseDto(Jwt token) {
         return new AuthResponseDto(
                 token.getToken());
-    }
-
-    public CreateUserDto mapToCreateUserDto(User user) {
-        return new CreateUserDto(
-                user.getUsername(),
-                user.getPassword(),
-                user.getMailAddressee(),
-                user.getRoles().stream()
-                        .map(u -> new ReadRoleDto(u.getRoleName()))
-                        .collect(Collectors.toList()));
     }
 
     public ReadUserDto mapToReadUserDto(User user) {
@@ -61,7 +46,7 @@ public class DtoMapper {
                 user.getUsername(),
                 user.getMailAddressee(),
                 user.isEnabled(),
-                user.getRoles(),
+                user.getRoles().stream().map(r -> new ReadRoleDto(r.getRoleId(), r.getRoleName())).collect(Collectors.toList()),
                 mapToReadWalletDtoList(user.getWalletList()));
     }
 
@@ -72,7 +57,7 @@ public class DtoMapper {
                         u.getUsername(),
                         u.getMailAddressee(),
                         u.isEnabled(),
-                        u.getRoles(),
+                        u.getRoles().stream().map(r -> new ReadRoleDto(r.getRoleId(), r.getRoleName())).collect(Collectors.toList()),
                         mapToReadWalletDtoList(u.getWalletList())))
                 .collect(Collectors.toList());
     }
@@ -91,7 +76,6 @@ public class DtoMapper {
         return new ReadWalletDto(
                 wallet.getWalletId(),
                 wallet.getWalletName(),
-                wallet.getUser().getUserId(),
                 mapToReadCoinDtoList(wallet.getCoinList()));
     }
 
@@ -101,17 +85,14 @@ public class DtoMapper {
                 .map(wallet -> new ReadWalletDto(
                         wallet.getWalletId(),
                         wallet.getWalletName(),
-                        wallet.getUser().getUserId(),
                         mapToReadCoinDtoList(wallet.getCoinList())))
                 .collect(Collectors.toList());
     }
 
     public Coin mapToCoin(AddCoinDto addCoinDto) throws WalletNotFoundException {
-        Wallet wallet = walletService.findWallet(addCoinDto.getWalletId());
         return new Coin(
                 addCoinDto.getCoinName(),
-                addCoinDto.getQuantity(),
-                wallet);
+                addCoinDto.getQuantity());
     }
 
     public Coin mapToCoin(SellCoinDto sellCoinDto) {
@@ -152,12 +133,14 @@ public class DtoMapper {
 
     public ReadRoleDto mapToReadRoleDto(Role role) {
         return new ReadRoleDto(
+                role.getRoleId(),
                 role.getRoleName());
     }
 
     public List<ReadRoleDto> mapToReadRoleDtoList(List<Role> roles) {
         return roles.stream()
                 .map(r -> new ReadRoleDto(
+                        r.getRoleId(),
                         r.getRoleName()))
                 .collect(Collectors.toList());
     }
@@ -166,14 +149,5 @@ public class DtoMapper {
         return new SearchDto(searchCoin.getCoins().stream()
                 .map(c -> new SearchCoinDto(c.getCoinId(), c.getCoinName(), c.getSymbol(), c.getMarketCapRank()))
                 .collect(Collectors.toList()));
-    }
-
-    public AddCoinDto mapToAddCoinDto(Coin coin) {
-        return new AddCoinDto(
-                coin.getCoinName(),
-                coin.getSymbol(),
-                coin.getQuantity(),
-                coin.getCurrentPrice(),
-                coin.getWallet().getWalletId());
     }
 }

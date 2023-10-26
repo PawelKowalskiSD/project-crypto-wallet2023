@@ -23,6 +23,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final VerificationKeyRepository verificationKeyRepository;
     private final MailSenderService mailSenderService;
 
     public User editUserAccount(User user) throws UserNotFoundException {
@@ -49,6 +50,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    public User findByUsername(String username) throws UserNotFoundException {
+      return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+    }
+
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
@@ -58,16 +63,16 @@ public class UserService {
     }
     public User createNewUser(User user) {
         String verifyToken = UUID.randomUUID().toString();
-        VerificationKey verificationKey = new VerificationKey(verifyToken, user);
-
         List<Role> roles = roleRepository.findRoleByRoleName("USER");
         user.setUsername(user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setMailAddressee(user.getMailAddressee());
         user.setRoles(roles);
         user.setEnabled(false);
-        user.setVerificationKey(verificationKey);
         userRepository.save(user);
+        VerificationKey verificationKey = new VerificationKey(verifyToken, user);
+        verificationKeyRepository.save(verificationKey);
+
         mailSenderService.sendMailToActiveAccount(Mail.builder()
                 .mailTo(user.getMailAddressee())
                 .subject("Verify Key")

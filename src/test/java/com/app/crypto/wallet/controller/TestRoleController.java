@@ -25,7 +25,7 @@ public class TestRoleController {
         RoleController roleController = new RoleController(roleService, dto);
         List<Role> getAllRoles = List.of(new Role(1L, "USER"), new Role(2L, "ADMIN"));
         when(roleService.getRoles()).thenReturn(getAllRoles);
-        List<ReadRoleDto> responseReadRoleDto = List.of(new ReadRoleDto("USER"), new ReadRoleDto("ADMIN"));
+        List<ReadRoleDto> responseReadRoleDto = List.of(new ReadRoleDto(1L, "USER"), new ReadRoleDto(2L, "ADMIN"));
         when(dto.mapToReadRoleDtoList(getAllRoles)).thenReturn(responseReadRoleDto);
         //When
         List<ReadRoleDto> result = roleController.getAllRoles().getBody();
@@ -41,7 +41,7 @@ public class TestRoleController {
         long requestRoleId = 1L;
         Role roleInDatabase = new Role(1L, "USER");
         when(roleService.getRoleById(requestRoleId)).thenReturn(roleInDatabase);
-        ReadRoleDto responseReadRoleDto = new ReadRoleDto("USER");
+        ReadRoleDto responseReadRoleDto = new ReadRoleDto(1L, "USER");
         when(dto.mapToReadRoleDto(roleInDatabase)).thenReturn(responseReadRoleDto);
         //When
         ReadRoleDto result = roleController.getRole(requestRoleId).getBody();
@@ -63,8 +63,8 @@ public class TestRoleController {
         userRolesToModify.add(new Role("ADMIN"));
         when(roleService.addRoleToUser(userRolesToModify)).thenReturn(modifiedUserRoles);
         List<ReadRoleDto> responseRoleDto = new ArrayList<>();
-        responseRoleDto.add(new ReadRoleDto("USER"));
-        responseRoleDto.add(new ReadRoleDto("ADMIN"));
+        responseRoleDto.add(new ReadRoleDto(1L, "USER"));
+        responseRoleDto.add(new ReadRoleDto(1L, "ADMIN"));
         when((dto.mapToReadRoleDtoList(modifiedUserRoles))).thenReturn(responseRoleDto);
         //When
         List<ReadRoleDto> result = roleController.addRoleToUser(requestAddRoleDtoToUser).getBody();
@@ -86,7 +86,7 @@ public class TestRoleController {
         userRolesToModify.add(new Role("USER"));
         when(roleService.removeUserRoles(userRolesToModify)).thenReturn(modifiedUserRoles);
         List<ReadRoleDto> responseRoleDto = new ArrayList<>();
-        responseRoleDto.add(new ReadRoleDto("USER"));
+        responseRoleDto.add(new ReadRoleDto(1L, "USER"));
         when(dto.mapToReadRoleDtoList(modifiedUserRoles)).thenReturn(responseRoleDto);
         //When
         List<ReadRoleDto> result = roleController.removeRoleFromUser(requestRemoveRoleDto).getBody();

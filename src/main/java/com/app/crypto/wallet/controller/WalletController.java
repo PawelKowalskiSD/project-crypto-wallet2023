@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.CreateWalletDto;
 import com.app.crypto.wallet.domain.dto.EditWalletDto;
 import com.app.crypto.wallet.domain.dto.ReadWalletDto;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -32,7 +33,7 @@ public class WalletController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadWalletDto> createWallet(@RequestBody CreateWalletDto createWalletDto) {
+    public ResponseEntity<ReadWalletDto> createWallet(@RequestBody CreateWalletDto createWalletDto) throws UserPermissionsException, UserNotFoundException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.createNewWallet(dtoMapper.mapToWallet(createWalletDto))));
     }
 
