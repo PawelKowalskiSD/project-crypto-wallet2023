@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.security.config;
 
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.UserRepository;
 import com.app.crypto.wallet.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -12,15 +13,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
-
-import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
 @Configuration
@@ -37,13 +35,11 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers( "/auth/**").permitAll()
-                .requestMatchers(DELETE, "/users").hasAuthority("USER")
-                .requestMatchers(PATCH, "/users").hasAuthority("USER")
-                .requestMatchers("/coins/**").hasAuthority("USER")
-                .requestMatchers("/wallets/**").hasAuthority("USER")
-                .requestMatchers("/wallets/**").hasAuthority("ADMIN")
-                .requestMatchers("/users/**", "/roles/**", "/coins/**").hasAuthority("ADMIN")
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/users/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/coins/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/wallets/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/roles/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated();
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -66,6 +62,12 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> {
+            try {
+                return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }
