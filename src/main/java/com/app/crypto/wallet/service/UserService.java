@@ -1,10 +1,12 @@
 package com.app.crypto.wallet.service;
 
+import com.app.crypto.wallet.client.config.AuthConfig;
 import com.app.crypto.wallet.domain.Mail;
 import com.app.crypto.wallet.domain.Role;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.VerificationKey;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.repository.RoleRepository;
 import com.app.crypto.wallet.repository.UserRepository;
 import com.app.crypto.wallet.repository.VerificationKeyRepository;
@@ -12,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,8 +26,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final VerificationKeyRepository verificationKeyRepository;
     private final MailSenderService mailSenderService;
+    private final AuthConfig authConfig;
 
-    public User editUserAccount(User user) throws UserNotFoundException {
+    public User editUserAccount(User user) throws UserNotFoundException, UserPermissionsException {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
         Optional<User> findUserId = userRepository.findByUserId(user.getUserId());
         if (findUserId.isPresent()) {
             if (user.getUsername() != null) {
@@ -45,22 +48,25 @@ public class UserService {
         return user;
     }
 
-    public void deleteUserAccount(Long userId) {
-        userId = 1L;
+    public void deleteUserAccount(Long userId) throws UserPermissionsException {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
         userRepository.deleteById(userId);
     }
 
     public User findByUsername(String username) throws UserNotFoundException {
-      return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
-    public List<User> getAllUser() {
+    public List<User> getAllUser() throws UserPermissionsException {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
         return userRepository.findAll();
     }
 
-    public User getUserById(Long userId) throws UserNotFoundException {
+    public User getUserById(Long userId) throws UserNotFoundException, UserPermissionsException {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
         return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
     }
+
     public User createNewUser(User user) {
         String verifyToken = UUID.randomUUID().toString();
         List<Role> roles = roleRepository.findRoleByRoleName("USER");
@@ -74,11 +80,11 @@ public class UserService {
         verificationKeyRepository.save(verificationKey);
 
         mailSenderService.sendMailToActiveAccount(Mail.builder()
-                .mailTo(user.getMailAddressee())
-                .subject("Verify Key")
-                .message("We send you mail")
-                .toCc(null)
-                .build(),
+                        .mailTo(user.getMailAddressee())
+                        .subject("Verify Key")
+                        .message("We send you mail")
+                        .toCc(null)
+                        .build(),
                 verificationKey
         );
         return user;

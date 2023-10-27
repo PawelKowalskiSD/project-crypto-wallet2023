@@ -6,6 +6,7 @@ import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
+import com.app.crypto.wallet.repository.UserRepository;
 import com.app.crypto.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,22 +18,27 @@ import java.util.Optional;
 @Service
 public class WalletService {
     private final WalletRepository walletRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final AuthConfig authConfig;
 
     public List<Wallet> findAllWallets() throws UserPermissionsException {
-        long userId = authConfig.getUserIdFromAuthentication();
-        return walletRepository.findWalletsByUser_UserId(userId);
+        long validateUserId = authConfig.getUserIdFromAuthentication();
+        return walletRepository.findWalletsByUser_UserId(validateUserId);
     }
 
-    public Wallet findWallet(Long walletId) throws WalletNotFoundException {
-        return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
+    public Wallet findWallet(Long walletId) throws WalletNotFoundException, UserPermissionsException {
+        Optional<Wallet> wallet = walletRepository.findByWalletId(walletId);
+        long validateUserId = authConfig.getUserIdFromAuthentication();
+        if (!(wallet.get().getUser().getUserId() == validateUserId))
+            throw new UserPermissionsException();
+        else
+            return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
     }
 
     public Wallet createNewWallet(Wallet wallet) throws UserPermissionsException, UserNotFoundException {
-        long userId = authConfig.getUserIdFromAuthentication();
-        User user = userService.getUserById(userId);
-        if(wallet.getWalletName() != null) {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
+        User user = userRepository.findByUserId(validateUserId).orElseThrow(UserNotFoundException::new);
+        if (wallet.getWalletName() != null) {
             wallet.setWalletName(wallet.getWalletName());
             wallet.setUser(user);
             walletRepository.save(wallet);
@@ -40,9 +46,10 @@ public class WalletService {
         return wallet;
     }
 
-    public Wallet editWallet(Wallet wallet) {
+    public Wallet editWallet(Wallet wallet) throws UserPermissionsException {
         Optional<Wallet> findWallet = walletRepository.findByWalletId(wallet.getWalletId());
-        if (findWallet.isPresent()) {
+        long validateUserId = authConfig.getUserIdFromAuthentication();
+        if (findWallet.isPresent() && wallet.getUser().getUserId() == validateUserId) {
             if (wallet.getWalletName() != null) {
                 wallet.setWalletName(wallet.getWalletName());
             }
@@ -51,7 +58,12 @@ public class WalletService {
         return wallet;
     }
 
-    public void deleteWalletByWalletId(Long walletId) {
-        walletRepository.deleteById(walletId);
+    public void deleteWalletByWalletId(Long walletId) throws UserPermissionsException {
+        Optional<Wallet> wallet = walletRepository.findByWalletId(walletId);
+        long validateUserId = authConfig.getUserIdFromAuthentication();
+        if (!(wallet.get().getUser().getUserId() == validateUserId))
+            throw new UserPermissionsException();
+        else
+            walletRepository.deleteById(walletId);
     }
 }

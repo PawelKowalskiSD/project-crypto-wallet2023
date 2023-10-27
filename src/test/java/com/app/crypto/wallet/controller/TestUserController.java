@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.dto.EditUserDto;
 import com.app.crypto.wallet.domain.dto.ReadUserDto;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class TestUserController {
 
 
     @Test
-    void shouldGetAllUsers() {
+    void shouldGetAllUsers() throws UserPermissionsException {
         //Given
         UserController userController = new UserController(service, dto);
         List<User> databaseUsers = new ArrayList<>();
@@ -39,7 +40,7 @@ public class TestUserController {
     }
 
     @Test
-    void shouldGetUser() throws UserNotFoundException {
+    void shouldGetUser() throws UserNotFoundException, UserPermissionsException {
         //Given
         UserController userController = new UserController(service, dto);
         User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());
@@ -55,7 +56,7 @@ public class TestUserController {
     }
 
     @Test
-    void shouldEditAccount() throws UserNotFoundException {
+    void shouldEditAccount() throws UserNotFoundException, UserPermissionsException {
         //Given
         UserController userController = new UserController(service, dto);
         EditUserDto requestUserDto = new EditUserDto("Alan");
@@ -73,7 +74,7 @@ public class TestUserController {
     }
 
     @Test
-    void shouldDeleteUser() {
+    void shouldDeleteUser() throws UserPermissionsException {
         //Given
         UserController userController = new UserController(service, dto);
         User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());

@@ -55,7 +55,7 @@ public class WalletServiceTest {
     }
 
     @Test
-    void findWallet() throws WalletNotFoundException {
+    void findWallet() throws WalletNotFoundException, UserPermissionsException {
         //Given
         Wallet wallet = new Wallet(1L, "new wallet", new User(1L));
         when(walletRepository.findByWalletId(wallet.getUser().getUserId())).thenReturn(Optional.of(wallet));

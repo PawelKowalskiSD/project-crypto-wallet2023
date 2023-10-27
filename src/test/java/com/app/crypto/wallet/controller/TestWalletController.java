@@ -42,7 +42,7 @@ public class TestWalletController {
     }
 
     @Test
-    void shouldGetWallet() throws WalletNotFoundException {
+    void shouldGetWallet() throws WalletNotFoundException, UserPermissionsException {
         //Given
         WalletController walletController = new WalletController(service, dto);
         Wallet databaseWallet = new Wallet(1L, "first wallet");
@@ -76,10 +76,10 @@ public class TestWalletController {
     }
 
     @Test
-    void shouldEditWallet() {
+    void shouldEditWallet() throws UserPermissionsException {
         //Given
         WalletController walletController = new WalletController(service, dto);
-        EditWalletDto requestWalletDto = new EditWalletDto("my wallet");
+        EditWalletDto requestWalletDto = new EditWalletDto(1L, "my wallet");
         Wallet walletToModify = new Wallet(1L, "first wallet");
         when(dto.mapToWallet(requestWalletDto)).thenReturn(walletToModify);
         Wallet modifiedWallet = new Wallet(1L, "my wallet");
@@ -94,7 +94,7 @@ public class TestWalletController {
     }
 
     @Test
-    void shouldDeleteWallet() {
+    void shouldDeleteWallet() throws UserPermissionsException {
         //Given
         WalletController walletController = new WalletController(service, dto);
         Wallet walletInDatabase = new Wallet(1L, "first wallet");

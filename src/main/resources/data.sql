@@ -5,7 +5,7 @@ INSERT INTO role (role_id, role_name) values (2, 'USER');
 INSERT INTO user (user_id, is_enabled, mail_addressee, password, username) values (1, true, 'admin@123.com', sha1('admin123'), 'admin');
 INSERT INTO user (user_id, is_enabled, mail_addressee, password, username) values (2, true, 'jan@123.com', sha1('jan123'), 'jan');
 
-INSERT INTO join_user_role(user_id, role_id) values (1,1), (2,1);
+INSERT INTO join_user_role(user_id, role_id) values (1,1), (2,2);
 
 insert into wallet(wallet_id, wallet_name, user_id) VALUES (1, 'demo wallet', 2);
 

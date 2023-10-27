@@ -54,4 +54,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handlerRoleNotFoundException(RoleNotFoundException exception) {
         return new ResponseEntity<>("Role not found", HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handlerJwtNotFoundException(JwtNotFoundException exception) {
+        return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
+    }
 }

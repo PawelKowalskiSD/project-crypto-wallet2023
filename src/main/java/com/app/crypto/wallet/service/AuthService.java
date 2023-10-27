@@ -3,6 +3,7 @@ package com.app.crypto.wallet.service;
 import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.VerificationKey;
+import com.app.crypto.wallet.exceptions.JwtNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.JwtRepository;
 import com.app.crypto.wallet.repository.UserRepository;
@@ -22,11 +23,10 @@ public class AuthService {
     private final JwtRepository jwtRepository;
     private final VerificationKeyRepository verificationKeyRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
 
 
     public Jwt createJwt(User user) throws UserNotFoundException {
-        User userInDatabase = userService.findByUsername(user.getUsername());
+        User userInDatabase = userRepository.findByUsername(user.getUsername()).orElseThrow(UserNotFoundException::new);
         Algorithm algorithm = Algorithm.HMAC512("secret");
         String token = JWT.create()
                 .withClaim("id", userInDatabase.getUserId())
@@ -56,4 +56,5 @@ public class AuthService {
             token.setExpired(true);
         });
     }
+
 }

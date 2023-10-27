@@ -1,6 +1,7 @@
 package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.domain.Jwt;
+import com.app.crypto.wallet.exceptions.JwtNotFoundException;
 import com.app.crypto.wallet.repository.JwtRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,16 +19,20 @@ public class LogoutService implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String auth = request.getHeader("Authorization");
-        String token;
         if (auth == null || !auth.startsWith("Bearer ")) {
             return;
         }
-        token = auth.substring(7);
-        Jwt soredToken = jwtRepository.findByToken(token).orElse(null);
-        if (soredToken != null ) {
-            soredToken.setExpired(true);
-            jwtRepository.save(soredToken);
-            SecurityContextHolder.clearContext();
+        String token = auth.substring(7);
+        try {
+         Jwt soredToken = jwtRepository.findByToken(token).orElseThrow(JwtNotFoundException::new);
+            if (soredToken != null ) {
+                soredToken.setExpired(true);
+                jwtRepository.save(soredToken);
+                SecurityContextHolder.clearContext();
+            }
+        } catch (JwtNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
         }
+
     }
 }

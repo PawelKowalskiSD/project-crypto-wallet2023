@@ -28,4 +28,8 @@ public class RoleService {
     public List<Role> removeUserRoles(List<Role> roles) {
         return roles;
     }
+
+    public List<Role> findAllRoleByName(String name) {
+        return roleRepository.findRoleByRoleName(name);
+    }
 }

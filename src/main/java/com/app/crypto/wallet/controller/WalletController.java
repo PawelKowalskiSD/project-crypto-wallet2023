@@ -8,7 +8,6 @@ import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.WalletService;
-import com.app.crypto.wallet.validators.WalletValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class WalletController {
     }
 
     @GetMapping(value = "/{walletId}")
-    public ResponseEntity<ReadWalletDto> getWallet(@PathVariable Long walletId) throws WalletNotFoundException {
+    public ResponseEntity<ReadWalletDto> getWallet(@PathVariable Long walletId) throws WalletNotFoundException, UserPermissionsException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.findWallet(walletId)));
     }
 
@@ -39,12 +38,12 @@ public class WalletController {
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadWalletDto> editWallet(@RequestBody EditWalletDto editWalletDto) {
+    public ResponseEntity<ReadWalletDto> editWallet(@RequestBody EditWalletDto editWalletDto) throws UserPermissionsException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadWalletDto(walletService.editWallet(dtoMapper.mapToWallet(editWalletDto))));
     }
 
     @DeleteMapping(value = "/{walletId}")
-    public ResponseEntity<Void> deleteWallet(@PathVariable Long walletId) {
+    public ResponseEntity<Void> deleteWallet(@PathVariable Long walletId) throws UserPermissionsException {
         walletService.deleteWalletByWalletId(walletId);
         return ResponseEntity.ok().build();
     }

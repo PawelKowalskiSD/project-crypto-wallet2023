@@ -69,6 +69,7 @@ public class DtoMapper {
 
     public Wallet mapToWallet(EditWalletDto editWalletDto) {
         return new Wallet(
+                editWalletDto.getWalletId(),
                 editWalletDto.getWalletName());
     }
 
@@ -89,7 +90,7 @@ public class DtoMapper {
                 .collect(Collectors.toList());
     }
 
-    public Coin mapToCoin(AddCoinDto addCoinDto) throws WalletNotFoundException {
+    public Coin mapToCoin(AddCoinDto addCoinDto) {
         return new Coin(
                 addCoinDto.getCoinName(),
                 addCoinDto.getQuantity());

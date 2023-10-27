@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EditWalletDto {
 
+    @JsonProperty("id")
+    private long walletId;
+
     @JsonProperty("name")
     private String walletName;
 }
