@@ -59,4 +59,10 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handlerJwtNotFoundException(JwtNotFoundException exception) {
         return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handlerRoleIsAssignedException(RoleIsAssignedException exception) {
+        return new ResponseEntity<>("User has already been assigned such a role", HttpStatus.CONFLICT);
+    }
+
 }

@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RemoveRoleDto {
+public class InputDataRoleDto {
 
     @JsonProperty("name")
     private String roleName;
+
+    @JsonProperty("id")
+    private long userId;
 }

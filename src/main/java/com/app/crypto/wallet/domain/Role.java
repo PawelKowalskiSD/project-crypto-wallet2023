@@ -33,4 +33,9 @@ public class Role {
         this.roleId = roleId;
         this.roleName = roleName;
     }
+
+    public Role(String roleName, List<User> users) {
+        this.roleName = roleName;
+        this.users = users;
+    }
 }

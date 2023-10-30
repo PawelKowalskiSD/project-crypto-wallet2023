@@ -2,17 +2,24 @@ package com.app.crypto.wallet.mapper;
 
 import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
-import com.app.crypto.wallet.exceptions.WalletNotFoundException;
+import com.app.crypto.wallet.exceptions.RoleNotFoundException;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.service.RoleService;
+import com.app.crypto.wallet.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
 public class DtoMapper {
+
+    private final UserService userService;
+
+    private final RoleService roleService;
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
@@ -123,13 +130,15 @@ public class DtoMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<Role> mapToRole(AddRoleDto addRoleDto) {
-        return Stream.of(new Role(addRoleDto.getRoleName()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Role> mapToRole(RemoveRoleDto removeRoleDto) {
-        return Stream.of(new Role(removeRoleDto.getRoleName())).collect(Collectors.toList());
+    public Role mapToRole(InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException {
+        User user = userService.findByUserId(inputDataRoleDto.getUserId());
+        Role role = roleService.findByRoleName(inputDataRoleDto.getRoleName());
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        return new Role(
+                role.getRoleId(),
+                role.getRoleName(),
+                users);
     }
 
     public ReadRoleDto mapToReadRoleDto(Role role) {

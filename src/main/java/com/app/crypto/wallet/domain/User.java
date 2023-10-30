@@ -105,6 +105,10 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public User(List<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName()))

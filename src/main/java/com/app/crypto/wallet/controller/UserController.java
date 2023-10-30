@@ -21,7 +21,7 @@ public class UserController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<ReadUserDto>> getAllUsers() throws UserPermissionsException {
+    public ResponseEntity<List<ReadUserDto>> getAllUsers() {
         return ResponseEntity.ok().body(dtoMapper.mapToReadUserDtoList(userService.getAllUser()));
     }
     @GetMapping(value = "{userId}")

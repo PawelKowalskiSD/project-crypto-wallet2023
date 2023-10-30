@@ -1,9 +1,10 @@
 package com.app.crypto.wallet.controller;
 
-import com.app.crypto.wallet.domain.dto.AddRoleDto;
+import com.app.crypto.wallet.domain.dto.InputDataRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
-import com.app.crypto.wallet.domain.dto.RemoveRoleDto;
+import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,12 @@ public class RoleController {
     }
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ReadRoleDto>> addRoleToUser(@RequestBody AddRoleDto addRoleDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDtoList(roleService.addRoleToUser(dtoMapper.mapToRole(addRoleDto))));
+    public ResponseEntity<ReadRoleDto> addRoleToUser(@RequestBody InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException, RoleIsAssignedException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDto(roleService.addRoleToUser(dtoMapper.mapToRole(inputDataRoleDto))));
     }
 
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ReadRoleDto>> removeRoleFromUser(@RequestBody RemoveRoleDto removeRoleDto) {
-        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDtoList(roleService.removeUserRoles(dtoMapper.mapToRole(removeRoleDto))));
+    public ResponseEntity<ReadRoleDto> removeRoleFromUser(@RequestBody InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException {
+        return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(inputDataRoleDto))));
     }
 }

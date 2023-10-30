@@ -31,7 +31,7 @@ public class UserService {
     public User editUserAccount(User user) throws UserNotFoundException, UserPermissionsException {
         long validateUserId = authConfig.getUserIdFromAuthentication();
         Optional<User> findUserId = userRepository.findByUserId(user.getUserId());
-        if (findUserId.isPresent()) {
+        if (findUserId.isPresent() && validateUserId == user.getUserId()) {
             if (user.getUsername() != null) {
                 user.setUsername(user.getUsername());
             }
@@ -50,21 +50,22 @@ public class UserService {
 
     public void deleteUserAccount(Long userId) throws UserPermissionsException {
         long validateUserId = authConfig.getUserIdFromAuthentication();
-        userRepository.deleteById(userId);
+        if (validateUserId == userId)
+            userRepository.deleteById(userId);
+        else
+            throw new UserPermissionsException();
     }
 
-    public User findByUsername(String username) throws UserNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-    }
-
-    public List<User> getAllUser() throws UserPermissionsException {
-        long validateUserId = authConfig.getUserIdFromAuthentication();
+    public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     public User getUserById(Long userId) throws UserNotFoundException, UserPermissionsException {
         long validateUserId = authConfig.getUserIdFromAuthentication();
-        return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        if (userId == validateUserId)
+            return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        else
+            throw new UserNotFoundException();
     }
 
     public User createNewUser(User user) {
@@ -88,5 +89,9 @@ public class UserService {
                 verificationKey
         );
         return user;
+    }
+
+    public User findByUserId(long userId) throws UserNotFoundException {
+        return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
     }
 }

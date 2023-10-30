@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/coins/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/wallets/**").hasAnyAuthority("USER", "ADMIN")
-                .requestMatchers("/roles/**").hasAuthority("ADMIN")
+                .requestMatchers("/roles/**").hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated();
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

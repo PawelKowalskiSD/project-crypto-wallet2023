@@ -1,8 +1,12 @@
 package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.domain.Role;
+import com.app.crypto.wallet.domain.User;
+import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
+import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.RoleRepository;
+import com.app.crypto.wallet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +16,24 @@ import java.util.List;
 @Service
 public class RoleService {
     private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
-    public List<Role> addRoleToUser(List<Role> roles) {
-        return roles;
+    public Role addRoleToUser(Role role) throws RoleIsAssignedException, UserNotFoundException, RoleNotFoundException {
+    Role fetchedRole = roleRepository.findByRoleName(role.getRoleName()).orElseThrow(RoleNotFoundException::new);
+        for (User user : role.getUsers()) {
+            User fetchedUser = userRepository.findByUserId(user.getUserId())
+                    .orElseThrow(UserNotFoundException::new);
+            boolean roleAlreadyExists = fetchedUser.getRoles().stream()
+                    .anyMatch(existingRole -> existingRole.getRoleName().equals(fetchedRole.getRoleName()));
+
+            if (!roleAlreadyExists) {
+                fetchedUser.getRoles().add(fetchedRole);
+            } else {
+                throw new RoleIsAssignedException();
+            }
+        }
+        userRepository.saveAll(role.getUsers());
+        return role;
     }
 
     public List<Role> getRoles() {
@@ -25,11 +44,26 @@ public class RoleService {
         return roleRepository.findByRoleId(roleId).orElseThrow(RoleNotFoundException::new);
     }
 
-    public List<Role> removeUserRoles(List<Role> roles) {
-        return roles;
+    public Role findByRoleName(String name) throws RoleNotFoundException {
+        return roleRepository.findByRoleName(name).orElseThrow(RoleNotFoundException::new);
     }
 
-    public List<Role> findAllRoleByName(String name) {
-        return roleRepository.findRoleByRoleName(name);
+    public Role removeUserRoles(Role role) throws RoleNotFoundException, UserNotFoundException {
+        Role fetchedRole = roleRepository.findByRoleName(role.getRoleName()).orElseThrow(RoleNotFoundException::new);
+        for (User user : role.getUsers()) {
+            User fetchedUser = userRepository.findByUserId(user.getUserId())
+                    .orElseThrow(UserNotFoundException::new);
+            boolean roleAlreadyExists = fetchedUser.getRoles().stream()
+                    .anyMatch(existingRole -> existingRole.getRoleName().equals(fetchedRole.getRoleName()));
+
+            if (roleAlreadyExists) {
+                fetchedUser.getRoles().remove(fetchedRole);
+            } else {
+                throw new RoleNotFoundException();
+            }
+        }
+        userRepository.saveAll(role.getUsers());
+        return role;
     }
+
 }
