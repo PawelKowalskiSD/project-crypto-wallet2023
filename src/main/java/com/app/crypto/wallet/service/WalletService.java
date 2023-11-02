@@ -27,12 +27,12 @@ public class WalletService {
     }
 
     public Wallet findWallet(Long walletId) throws WalletNotFoundException, UserPermissionsException {
-        Optional<Wallet> wallet = walletRepository.findByWalletId(walletId);
+        Wallet wallet = walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
         long validateUserId = authConfig.getUserIdFromAuthentication();
-        if (!(wallet.get().getUser().getUserId() == validateUserId))
+        if (!(wallet.getUser().getUserId() == validateUserId))
             throw new UserPermissionsException();
         else
-            return walletRepository.findByWalletId(walletId).orElseThrow(WalletNotFoundException::new);
+            return wallet;
     }
 
     public Wallet createNewWallet(Wallet wallet) throws UserPermissionsException, UserNotFoundException {
