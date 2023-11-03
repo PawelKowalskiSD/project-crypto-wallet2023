@@ -5,6 +5,7 @@ import com.app.crypto.wallet.domain.Mail;
 import com.app.crypto.wallet.domain.Role;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.VerificationKey;
+import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.repository.RoleRepository;
@@ -68,13 +69,13 @@ public class UserService {
             throw new UserNotFoundException();
     }
 
-    public User createNewUser(User user) {
+    public User createNewUser(User user) throws RoleNotFoundException {
         String verifyToken = UUID.randomUUID().toString();
-        List<Role> roles = roleRepository.findRoleByRoleName("USER");
+        Role role = roleRepository.findByRoleName("USER").orElseThrow(RoleNotFoundException::new);
         user.setUsername(user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setMailAddressee(user.getMailAddressee());
-        user.setRoles(roles);
+        user.setRoles(List.of(role));
         user.setEnabled(false);
         userRepository.save(user);
         VerificationKey verificationKey = new VerificationKey(verifyToken, user);

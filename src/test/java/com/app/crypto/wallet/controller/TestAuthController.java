@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.dto.*;
+import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
@@ -39,7 +40,7 @@ public class TestAuthController {
     }
 
     @Test
-    void shouldSingUp() {
+    void shouldSingUp() throws RoleNotFoundException {
         //Given
         AuthController authController = new AuthController(authService, userService, dto);
         CreateUserDto requestCreateUserDto = new CreateUserDto("pablo", "pablo123", "mail@ap.pl");

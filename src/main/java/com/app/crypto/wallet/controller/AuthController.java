@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.dto.AuthRequestDto;
 import com.app.crypto.wallet.domain.dto.AuthResponseDto;
 import com.app.crypto.wallet.domain.dto.CreateUserDto;
 import com.app.crypto.wallet.domain.dto.ReadUserDto;
+import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadUserDto> singUp(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<ReadUserDto> singUp(@RequestBody CreateUserDto createUserDto) throws RoleNotFoundException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto))));
     }
 
