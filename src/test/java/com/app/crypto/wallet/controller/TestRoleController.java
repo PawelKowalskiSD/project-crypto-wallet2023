@@ -3,6 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.Role;
 import com.app.crypto.wallet.domain.dto.InputDataRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
+import com.app.crypto.wallet.exceptions.RoleIsAlreadyRemoveException;
 import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
@@ -10,7 +11,6 @@ import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +70,7 @@ public class TestRoleController {
     }
 
     @Test
-    void shouldRemoveRoleFromUser() throws RoleNotFoundException, UserNotFoundException {
+    void shouldRemoveRoleFromUser() throws RoleNotFoundException, UserNotFoundException, RoleIsAlreadyRemoveException {
         //Given
         RoleController roleController = new RoleController(roleService, dto);
         InputDataRoleDto requestInputDataRoleDtoToUser = new InputDataRoleDto("ADMIN", 1L);

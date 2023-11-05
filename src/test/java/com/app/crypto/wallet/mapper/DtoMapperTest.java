@@ -230,9 +230,12 @@ class DtoMapperTest {
         //Given
         Role role = new Role(1L, "ADMIN");
         User user = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
+        List<User> users = new ArrayList<>();
+        users.add(user);
         InputDataRoleDto inputDataRoleDto = new InputDataRoleDto(role.getRoleName(), user.getUserId());
         when(userService.findByUserId(inputDataRoleDto.getUserId())).thenReturn(user);
         when(roleService.findByRoleName(inputDataRoleDto.getRoleName())).thenReturn(role);
+        when(userService.getAllUser()).thenReturn(users);
         //When
         Role result = dtoMapper.mapToRole(inputDataRoleDto);
         //Then

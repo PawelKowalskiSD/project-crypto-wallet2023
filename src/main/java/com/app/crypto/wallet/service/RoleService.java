@@ -2,6 +2,7 @@ package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.domain.Role;
 import com.app.crypto.wallet.domain.User;
+import com.app.crypto.wallet.exceptions.RoleIsAlreadyRemoveException;
 import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -18,21 +22,17 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-    public Role addRoleToUser(Role role) throws RoleIsAssignedException, UserNotFoundException, RoleNotFoundException {
-    Role fetchedRole = roleRepository.findByRoleName(role.getRoleName()).orElseThrow(RoleNotFoundException::new);
-        for (User user : role.getUsers()) {
-            User fetchedUser = userRepository.findByUserId(user.getUserId())
-                    .orElseThrow(UserNotFoundException::new);
-            boolean roleAlreadyExists = fetchedUser.getRoles().stream()
-                    .anyMatch(existingRole -> existingRole.getRoleName().equals(fetchedRole.getRoleName()));
-
-            if (!roleAlreadyExists) {
-                fetchedUser.getRoles().add(fetchedRole);
-            } else {
-                throw new RoleIsAssignedException();
-            }
+    public Role addRoleToUser(Role role) throws RoleNotFoundException, RoleIsAssignedException {
+        Role fetchedRole = findByRoleName(role.getRoleName());
+        List<User> users = role.getUsers();
+        boolean roleAlreadyAssigned = users.stream().map(User::getRoles).anyMatch(u -> u.contains(fetchedRole));
+        if (roleAlreadyAssigned) {
+            throw new RoleIsAssignedException();
         }
-        userRepository.saveAll(role.getUsers());
+        users.stream()
+                .filter(u -> u.getRoles().add(fetchedRole))
+                .collect(Collectors.toList());
+        userRepository.saveAll(users);
         return role;
     }
 
@@ -48,21 +48,15 @@ public class RoleService {
         return roleRepository.findByRoleName(name).orElseThrow(RoleNotFoundException::new);
     }
 
-    public Role removeUserRoles(Role role) throws RoleNotFoundException, UserNotFoundException {
-        Role fetchedRole = roleRepository.findByRoleName(role.getRoleName()).orElseThrow(RoleNotFoundException::new);
-        for (User user : role.getUsers()) {
-            User fetchedUser = userRepository.findByUserId(user.getUserId())
-                    .orElseThrow(UserNotFoundException::new);
-            boolean roleAlreadyExists = fetchedUser.getRoles().stream()
-                    .anyMatch(existingRole -> existingRole.getRoleName().equals(fetchedRole.getRoleName()));
-
-            if (roleAlreadyExists) {
-                fetchedUser.getRoles().remove(fetchedRole);
-            } else {
-                throw new RoleNotFoundException();
-            }
-        }
-        userRepository.saveAll(role.getUsers());
+    public Role removeUserRoles(Role role) throws RoleNotFoundException, RoleIsAlreadyRemoveException {
+        Role fetchedRole = findByRoleName(role.getRoleName());
+        List<User> users = role.getUsers();
+        boolean roleIsAlreadyRemove = users.stream().map(User::getRoles).anyMatch(u -> !u.contains(fetchedRole));
+                if(roleIsAlreadyRemove) {
+                    throw new RoleIsAlreadyRemoveException();
+                }
+        users.stream().filter(u -> u.getRoles().remove(fetchedRole)).collect(Collectors.toList());
+        userRepository.saveAll(users);
         return role;
     }
 

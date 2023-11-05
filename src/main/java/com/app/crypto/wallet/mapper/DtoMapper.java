@@ -131,14 +131,15 @@ public class DtoMapper {
     }
 
     public Role mapToRole(InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException {
+
         User user = userService.findByUserId(inputDataRoleDto.getUserId());
         Role role = roleService.findByRoleName(inputDataRoleDto.getRoleName());
-        List<User> users = new ArrayList<>();
-        users.add(user);
+        List<User> users = userService.getAllUser();
         return new Role(
                 role.getRoleId(),
                 role.getRoleName(),
-                users);
+                        users.stream().filter(u -> u.getUserId() == user.getUserId()).collect(Collectors.toList())
+                );
     }
 
     public ReadRoleDto mapToReadRoleDto(Role role) {

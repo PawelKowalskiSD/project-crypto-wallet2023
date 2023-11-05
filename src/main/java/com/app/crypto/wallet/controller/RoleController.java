@@ -2,6 +2,7 @@ package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.domain.dto.InputDataRoleDto;
 import com.app.crypto.wallet.domain.dto.ReadRoleDto;
+import com.app.crypto.wallet.exceptions.RoleIsAlreadyRemoveException;
 import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
@@ -37,7 +38,7 @@ public class RoleController {
     }
 
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadRoleDto> removeRoleFromUser(@RequestBody InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException {
+    public ResponseEntity<ReadRoleDto> removeRoleFromUser(@RequestBody InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException, RoleIsAlreadyRemoveException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadRoleDto(roleService.removeUserRoles(dtoMapper.mapToRole(inputDataRoleDto))));
     }
 }

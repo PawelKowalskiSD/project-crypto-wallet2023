@@ -65,4 +65,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>("User has already been assigned such a role", HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<Object> handlerRoleIsAlreadyRemoveException(RoleIsAlreadyRemoveException exception) {
+        return new ResponseEntity<>("Role is already remove", HttpStatus.NOT_FOUND);
+    }
+
 }

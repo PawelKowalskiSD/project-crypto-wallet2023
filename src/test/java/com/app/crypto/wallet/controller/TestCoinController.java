@@ -75,7 +75,7 @@ public class TestCoinController {
         when(dto.mapToCoin(requestAddCoinDto)).thenReturn(expectedCoinInDatabase);
         Coin databaseCoin = new Coin(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase);
         when(clientService.addCoinToWallet(expectedCoinInDatabase)).thenReturn(databaseCoin);
-        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L,"Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000));
+        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000));
         when(dto.mapToReadCoinDto(databaseCoin)).thenReturn(responseAddCoinDto);
         //When
         ReadCoinDto result = coinController.addCoin(requestAddCoinDto).getBody();

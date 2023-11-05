@@ -21,7 +21,7 @@ public class TestUserController {
 
 
     @Test
-    void shouldGetAllUsers() throws UserPermissionsException {
+    void shouldGetAllUsers() {
         //Given
         UserController userController = new UserController(service, dto);
         List<User> databaseUsers = new ArrayList<>();
