@@ -4,8 +4,12 @@ import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
+import com.app.crypto.wallet.exceptions.WalletNotFoundException;
+import com.app.crypto.wallet.repository.WalletRepository;
 import com.app.crypto.wallet.service.RoleService;
 import com.app.crypto.wallet.service.UserService;
+import com.app.crypto.wallet.service.WalletService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -26,6 +31,8 @@ class DtoMapperTest {
     private UserService userService;
     @Mock
     private RoleService roleService;
+    @Mock
+    private WalletService walletService;
     @InjectMocks
     private DtoMapper dtoMapper;
 
@@ -168,9 +175,11 @@ class DtoMapperTest {
     }
 
     @Test
-    void shouldMapAddCoinDtoToCoin() {
+    void shouldMapAddCoinDtoToCoin() throws WalletNotFoundException, UserPermissionsException {
         //Given
-        AddCoinDto addCoinDto = new AddCoinDto("bitcoin", new BigDecimal(10));
+        Wallet wallet = new Wallet(1L, "wallet");
+        AddCoinDto addCoinDto = new AddCoinDto("bitcoin", new BigDecimal(10), 1L);
+        when(walletService.findWallet(1L)).thenReturn(wallet);
         //When
         Coin result = dtoMapper.mapToCoin(addCoinDto);
         //Then
@@ -193,7 +202,7 @@ class DtoMapperTest {
     @Test
     void shouldMapToReadCoinDto() {
         //Given
-        Coin coin = new Coin(1L, "bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000));
+        Coin coin = new Coin(1L, "bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000), new Wallet(1L, "wallet"));
         //When
         ReadCoinDto result = dtoMapper.mapToReadCoinDto(coin);
         //Then
@@ -202,14 +211,16 @@ class DtoMapperTest {
         assertEquals("btc", result.getSymbol());
         assertEquals(new BigDecimal(2), result.getQuantity());
         assertEquals(new BigDecimal(32000), result.getCurrentPrice());
+        assertEquals(1L, result.getWalletId());
     }
 
     @Test
-    void shouldMapToReadCoinDtoList() {
+    void shouldMapToReadCoinDtoList() throws WalletNotFoundException, UserPermissionsException {
         //Given
         List<Coin> coins = new ArrayList<>();
         coins.add(new Coin(1L, "Bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000)));
         coins.add(new Coin(2L, "Evmos", "evmos", new BigDecimal(120), new BigDecimal(1)));
+        Wallet wallet = new Wallet(1L, "new wallet", new User(), coins);
         //When
         List<ReadCoinDto> result = dtoMapper.mapToReadCoinDtoList(coins);
         //Then

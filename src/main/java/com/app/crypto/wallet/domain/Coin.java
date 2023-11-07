@@ -21,11 +21,11 @@ public class Coin {
     private String coinName;
     private String symbol;
     private BigDecimal quantity;
+    private BigDecimal currentPrice;
     private BigDecimal averagePurchasePrice;
     private BigDecimal averageSalePrice;
-    private BigDecimal currentPrice;
-    private BigDecimal totalValuePurchaseCoin;
     private BigDecimal totalValueOfCoinsSold;
+    private BigDecimal totalValuePurchaseCoin;
     @ManyToOne
     @JoinColumn(name = "WALLET_ID")
     private Wallet wallet;
@@ -70,5 +70,11 @@ public class Coin {
         this.symbol = symbol;
         this.quantity = quantity;
         this.currentPrice = currentPrice;
+    }
+
+    public Coin(String coinName, BigDecimal quantity, Wallet wallet) {
+        this.coinName = coinName;
+        this.quantity = quantity;
+        this.wallet = wallet;
     }
 }

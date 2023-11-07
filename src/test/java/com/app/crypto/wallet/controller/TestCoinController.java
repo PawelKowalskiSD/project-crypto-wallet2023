@@ -7,6 +7,7 @@ import com.app.crypto.wallet.domain.SearchCoin;
 import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.CoinNotFoundException;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.CoinService;
@@ -66,11 +67,11 @@ public class TestCoinController {
     }
 
     @Test
-    void shouldAddCoin() throws WalletNotFoundException {
+    void shouldAddCoin() throws WalletNotFoundException, UserPermissionsException {
         //Given
         CoinController coinController = new CoinController(service, dto, clientService);
         Wallet walletInDatabase = new Wallet(1L, "first-Wallet");
-        AddCoinDto requestAddCoinDto = new AddCoinDto("Bitcoin", new BigDecimal(10));
+        AddCoinDto requestAddCoinDto = new AddCoinDto("Bitcoin", new BigDecimal(10), 1L);
         Coin expectedCoinInDatabase = new Coin(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), walletInDatabase);
         when(dto.mapToCoin(requestAddCoinDto)).thenReturn(expectedCoinInDatabase);
         Coin databaseCoin = new Coin(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase);
@@ -92,13 +93,13 @@ public class TestCoinController {
         Coin coinInDatabase = new Coin(1L, "bitcoin", new BigDecimal(10), new BigDecimal(32000));
         when(dto.mapToCoin(requestSellCoinDto)).thenReturn(coinInDatabase);
         Coin modifiedCoinInDatabase = new Coin(1L, "bitcoin", new BigDecimal(9), new BigDecimal(32000));
-        when(service.sellCoin(coinInDatabase)).thenReturn(modifiedCoinInDatabase);
+        when(clientService.sellCoin(coinInDatabase)).thenReturn(modifiedCoinInDatabase);
         ReadCoinDto responseCoinDto = new ReadCoinDto(1L, "bitcoin", new BigDecimal(9), new BigDecimal(32000));
         when(dto.mapToReadCoinDto(modifiedCoinInDatabase)).thenReturn(responseCoinDto);
         //When
         ReadCoinDto result = coinController.sellCoinFromWallet(requestSellCoinDto).getBody();
         //Then
         assertEquals(new BigDecimal(9), result.getQuantity());
-        verify(service, times(1)).sellCoin(coinInDatabase);
+        verify(clientService, times(1)).sellCoin(coinInDatabase);
     }
 }

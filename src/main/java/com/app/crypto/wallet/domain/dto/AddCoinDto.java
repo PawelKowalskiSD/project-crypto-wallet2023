@@ -17,4 +17,7 @@ public class AddCoinDto {
 
     @JsonProperty("quantity")
     private BigDecimal quantity;
+
+    @JsonProperty("wallet_id")
+    private long walletId;
 }

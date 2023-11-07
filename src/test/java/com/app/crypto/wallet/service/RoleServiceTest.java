@@ -1,10 +1,13 @@
 package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.domain.Role;
+import com.app.crypto.wallet.domain.User;
+import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.exceptions.RoleIsAlreadyRemoveException;
 import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.repository.RoleRepository;
+import com.app.crypto.wallet.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +28,9 @@ class RoleServiceTest {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private RoleService roleService;
 
@@ -32,7 +38,10 @@ class RoleServiceTest {
     void shouldAddRoleToUser() throws RoleNotFoundException, RoleIsAssignedException {
         //Given
         Role addRole = new Role(1L, "USER");
+        List<User> databaseUsers = new ArrayList<>();
+        databaseUsers.add(new User(1L, "jan", "mail@123", true, List.of(new Role(1L,"ADMIN")), List.of(new Wallet(1L, "wallet"))));
         when(roleRepository.findByRoleName("USER")).thenReturn(Optional.of(addRole));
+        when(userRepository.saveAll(any())).thenReturn(databaseUsers);
         //When
         Role result = roleService.addRoleToUser(addRole);
         //Then

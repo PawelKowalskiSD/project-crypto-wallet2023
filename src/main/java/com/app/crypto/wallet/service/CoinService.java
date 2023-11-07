@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CoinService {
     private final CoinRepository coinRepository;
-    public Coin sellCoin(Coin sellCoin) {
-        return sellCoin;
-    }
+
 
     public Coin findCoinById(Long coinId) throws CoinNotFoundException {
         return coinRepository.findById(coinId).orElseThrow(CoinNotFoundException::new);

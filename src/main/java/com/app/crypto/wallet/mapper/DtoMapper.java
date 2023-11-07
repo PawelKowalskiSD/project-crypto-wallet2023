@@ -4,12 +4,14 @@ import com.app.crypto.wallet.domain.*;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.exceptions.UserPermissionsException;
+import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.service.RoleService;
 import com.app.crypto.wallet.service.UserService;
+import com.app.crypto.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,8 @@ public class DtoMapper {
     private final UserService userService;
 
     private final RoleService roleService;
+
+    private final WalletService walletService;
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
@@ -97,10 +101,12 @@ public class DtoMapper {
                 .collect(Collectors.toList());
     }
 
-    public Coin mapToCoin(AddCoinDto addCoinDto) {
+    public Coin mapToCoin(AddCoinDto addCoinDto) throws WalletNotFoundException, UserPermissionsException {
+        Wallet wallet = walletService.findWallet(addCoinDto.getWalletId());
         return new Coin(
                 addCoinDto.getCoinName(),
-                addCoinDto.getQuantity());
+                addCoinDto.getQuantity(),
+                wallet);
     }
 
     public Coin mapToCoin(SellCoinDto sellCoinDto) {
@@ -116,7 +122,12 @@ public class DtoMapper {
                 coin.getCoinName(),
                 coin.getSymbol(),
                 coin.getQuantity(),
-                coin.getCurrentPrice());
+                coin.getCurrentPrice(),
+                coin.getAveragePurchasePrice(),
+                coin.getAverageSalePrice(),
+                coin.getTotalValueOfCoinsSold(),
+                coin.getTotalValuePurchaseCoin(),
+                coin.getWallet().getWalletId());
     }
 
     public List<ReadCoinDto> mapToReadCoinDtoList(List<Coin> coinList) {
@@ -126,7 +137,12 @@ public class DtoMapper {
                         c.getCoinName(),
                         c.getSymbol(),
                         c.getQuantity(),
-                        c.getCurrentPrice()))
+                        c.getCurrentPrice(),
+                        c.getAveragePurchasePrice(),
+                        c.getAverageSalePrice(),
+                        c.getTotalValueOfCoinsSold(),
+                        c.getTotalValuePurchaseCoin()
+                        ))
                 .collect(Collectors.toList());
     }
 
@@ -138,8 +154,8 @@ public class DtoMapper {
         return new Role(
                 role.getRoleId(),
                 role.getRoleName(),
-                        users.stream().filter(u -> u.getUserId() == user.getUserId()).collect(Collectors.toList())
-                );
+                users.stream().filter(u -> u.getUserId() == user.getUserId()).collect(Collectors.toList())
+        );
     }
 
     public ReadRoleDto mapToReadRoleDto(Role role) {
