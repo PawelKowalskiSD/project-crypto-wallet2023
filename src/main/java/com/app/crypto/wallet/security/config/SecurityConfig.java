@@ -35,7 +35,18 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(
+                "/auth/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/webjars/**"
+                )
+                .permitAll()
                 .requestMatchers("/users/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/coins/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/wallets/**").hasAnyAuthority("USER", "ADMIN")
