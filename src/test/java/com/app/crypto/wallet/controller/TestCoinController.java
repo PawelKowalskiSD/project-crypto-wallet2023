@@ -7,6 +7,7 @@ import com.app.crypto.wallet.domain.SearchCoin;
 import com.app.crypto.wallet.domain.Wallet;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.CoinNotFoundException;
+import com.app.crypto.wallet.exceptions.CoinQuantityNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -63,11 +64,12 @@ public class TestCoinController {
         ReadCoinDto result = coinController.getCoin(requestCoinId).getBody();
         //Then
         assertEquals("bitcoin", result.getCoinName());
+        assertEquals("btc", result.getSymbol());
         verify(service, times(1)).findCoinById(requestCoinId);
     }
 
     @Test
-    void shouldAddCoin() throws WalletNotFoundException, UserPermissionsException {
+    void shouldAddCoin() throws WalletNotFoundException, UserPermissionsException, CoinNotFoundException {
         //Given
         CoinController coinController = new CoinController(service, dto, clientService);
         Wallet walletInDatabase = new Wallet(1L, "first-Wallet");
@@ -76,20 +78,23 @@ public class TestCoinController {
         when(dto.mapToCoin(requestAddCoinDto)).thenReturn(expectedCoinInDatabase);
         Coin databaseCoin = new Coin(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase);
         when(clientService.addCoinToWallet(expectedCoinInDatabase)).thenReturn(databaseCoin);
-        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000));
+        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase.getWalletId());
         when(dto.mapToReadCoinDto(databaseCoin)).thenReturn(responseAddCoinDto);
         //When
         ReadCoinDto result = coinController.addCoin(requestAddCoinDto).getBody();
         //Then
         assertEquals(new BigDecimal(10), result.getQuantity());
+        assertEquals("Bitcoin", result.getCoinName());
+        assertEquals(1L, result.getCoinId());
+        assertEquals(1L, result.getWalletId());
         verify(clientService, times(1)).addCoinToWallet(expectedCoinInDatabase);
     }
 
     @Test
-    void shouldSellCoinFromWallet() {
+    void shouldSellCoinFromWallet() throws WalletNotFoundException, UserPermissionsException, CoinNotFoundException, CoinQuantityNotFoundException {
         //Given
         CoinController coinController = new CoinController(service, dto, clientService);
-        SellCoinDto requestSellCoinDto = new SellCoinDto("bitcoin", new BigDecimal(1), new BigDecimal(32000));
+        SellCoinDto requestSellCoinDto = new SellCoinDto("bitcoin", new BigDecimal(1), 1L);
         Coin coinInDatabase = new Coin(1L, "bitcoin", new BigDecimal(10), new BigDecimal(32000));
         when(dto.mapToCoin(requestSellCoinDto)).thenReturn(coinInDatabase);
         Coin modifiedCoinInDatabase = new Coin(1L, "bitcoin", new BigDecimal(9), new BigDecimal(32000));

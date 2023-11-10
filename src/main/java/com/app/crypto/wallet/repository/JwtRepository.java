@@ -11,9 +11,7 @@ import java.util.Optional;
 @Transactional
 @Repository
 public interface JwtRepository extends CrudRepository<Jwt, Long> {
-
     Optional<Jwt> findByToken(String token);
-
     @Query(value = """
             select token from Jwt token inner join User user
             on token.user.userId = user.userId

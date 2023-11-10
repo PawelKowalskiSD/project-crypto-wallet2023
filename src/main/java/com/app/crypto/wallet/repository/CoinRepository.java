@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface CoinRepository extends CrudRepository<Coin, Long> {
     @Override
     Optional<Coin> findById(Long id);
-
     Coin findCoinsByCoinNameAndWallet_WalletId(String name, Long walletId);
 }

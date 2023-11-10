@@ -18,11 +18,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class DtoMapper {
-
     private final UserService userService;
-
     private final RoleService roleService;
-
     private final WalletService walletService;
 
     public User mapToUser(EditUserDto editUserDto) {
@@ -109,11 +106,12 @@ public class DtoMapper {
                 wallet);
     }
 
-    public Coin mapToCoin(SellCoinDto sellCoinDto) {
+    public Coin mapToCoin(SellCoinDto sellCoinDto) throws WalletNotFoundException, UserPermissionsException {
+        Wallet wallet = walletService.findWallet(sellCoinDto.getWalletId());
         return new Coin(
                 sellCoinDto.getCoinName(),
                 sellCoinDto.getQuantity(),
-                sellCoinDto.getCurrentPrice());
+                wallet);
     }
 
     public ReadCoinDto mapToReadCoinDto(Coin coin) {
@@ -142,7 +140,7 @@ public class DtoMapper {
                         c.getAverageSalePrice(),
                         c.getTotalValueOfCoinsSold(),
                         c.getTotalValuePurchaseCoin()
-                        ))
+                ))
                 .collect(Collectors.toList());
     }
 

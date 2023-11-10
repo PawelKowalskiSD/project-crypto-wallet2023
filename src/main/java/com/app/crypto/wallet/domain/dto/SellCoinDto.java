@@ -19,7 +19,7 @@ public class SellCoinDto {
     @JsonProperty("quantity")
     private BigDecimal quantity;
 
-    @JsonProperty("currentPrice")
-    private BigDecimal currentPrice;
+    @JsonProperty("wallet_id")
+    private long walletId;
 
 }

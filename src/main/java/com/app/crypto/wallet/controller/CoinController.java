@@ -6,6 +6,7 @@ import com.app.crypto.wallet.domain.dto.ReadCoinDto;
 import com.app.crypto.wallet.domain.dto.SearchDto;
 import com.app.crypto.wallet.domain.dto.SellCoinDto;
 import com.app.crypto.wallet.exceptions.CoinNotFoundException;
+import com.app.crypto.wallet.exceptions.CoinQuantityNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
@@ -35,12 +36,12 @@ public class CoinController {
 
 
     @PostMapping(value = "/adds", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadCoinDto> addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException, UserPermissionsException {
+    public ResponseEntity<ReadCoinDto> addCoin(@RequestBody AddCoinDto addCoinDto) throws WalletNotFoundException, UserPermissionsException, CoinNotFoundException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinGeckoClientService.addCoinToWallet(dtoMapper.mapToCoin(addCoinDto))));
     }
 
     @PostMapping(value = "/sells", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadCoinDto> sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) {
+    public ResponseEntity<ReadCoinDto> sellCoinFromWallet(@RequestBody SellCoinDto sellCoinDto) throws WalletNotFoundException, UserPermissionsException, CoinNotFoundException, CoinQuantityNotFoundException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinGeckoClientService.sellCoin(dtoMapper.mapToCoin(sellCoinDto))));
     }
 }

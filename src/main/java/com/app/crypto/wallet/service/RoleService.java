@@ -5,15 +5,12 @@ import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.exceptions.RoleIsAlreadyRemoveException;
 import com.app.crypto.wallet.exceptions.RoleIsAssignedException;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.RoleRepository;
 import com.app.crypto.wallet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -52,9 +49,9 @@ public class RoleService {
         Role fetchedRole = findByRoleName(role.getRoleName());
         List<User> users = role.getUsers();
         boolean roleIsAlreadyRemove = users.stream().map(User::getRoles).anyMatch(u -> !u.contains(fetchedRole));
-                if(roleIsAlreadyRemove) {
-                    throw new RoleIsAlreadyRemoveException();
-                }
+        if (roleIsAlreadyRemove) {
+            throw new RoleIsAlreadyRemoveException();
+        }
         users.stream().filter(u -> u.getRoles().remove(fetchedRole)).collect(Collectors.toList());
         userRepository.saveAll(users);
         return role;

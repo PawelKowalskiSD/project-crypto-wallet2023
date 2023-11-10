@@ -70,4 +70,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>("Role is already remove", HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler
+     public ResponseEntity<Object> handlerCoinQuantityNotFoundException(CoinQuantityNotFoundException exception) {
+        return new ResponseEntity<>("You don't have that much in your wallet", HttpStatus.NOT_FOUND);
+    }
+
 }

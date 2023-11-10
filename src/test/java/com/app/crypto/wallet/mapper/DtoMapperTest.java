@@ -188,15 +188,17 @@ class DtoMapperTest {
     }
 
     @Test
-    void shouldMapSellCoinDtoToCoin() {
+    void shouldMapSellCoinDtoToCoin() throws WalletNotFoundException, UserPermissionsException {
         //Given
-        SellCoinDto sellCoinDto = new SellCoinDto("bitcoin", new BigDecimal(2), new BigDecimal(32000));
+        Wallet wallet = new Wallet(1L, "wallet");
+        SellCoinDto sellCoinDto = new SellCoinDto("bitcoin", new BigDecimal(2), wallet.getWalletId());
+        when(walletService.findWallet(1L)).thenReturn(wallet);
         //When
         Coin result = dtoMapper.mapToCoin(sellCoinDto);
         //Then
         assertEquals("bitcoin", result.getCoinName());
         assertEquals(new BigDecimal(2), result.getQuantity());
-        assertEquals(new BigDecimal(32000), result.getCurrentPrice());
+        assertEquals(1L, result.getWallet().getWalletId());
     }
 
     @Test
@@ -215,7 +217,7 @@ class DtoMapperTest {
     }
 
     @Test
-    void shouldMapToReadCoinDtoList() throws WalletNotFoundException, UserPermissionsException {
+    void shouldMapToReadCoinDtoList() {
         //Given
         List<Coin> coins = new ArrayList<>();
         coins.add(new Coin(1L, "Bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000)));

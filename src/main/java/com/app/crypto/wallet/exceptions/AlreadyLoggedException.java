@@ -1,4 +1,4 @@
 package com.app.crypto.wallet.exceptions;
 
-public class AlreadyLoggedException extends Throwable {
+public class AlreadyLoggedException extends Exception {
 }
