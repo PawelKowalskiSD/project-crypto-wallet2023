@@ -4,6 +4,7 @@ import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.Role;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.VerificationKey;
+import com.app.crypto.wallet.exceptions.UserAccountVerificationException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.JwtRepository;
 import com.app.crypto.wallet.repository.UserRepository;
@@ -33,7 +34,7 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Test
-    void shouldCreateJwt() throws UserNotFoundException {
+    void shouldCreateJwt() throws UserNotFoundException, UserAccountVerificationException {
       //Given
         User databaseUser = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         Jwt jwt = new Jwt(1L, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +

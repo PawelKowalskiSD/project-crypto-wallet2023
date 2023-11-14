@@ -24,6 +24,7 @@ public class DtoMapper {
 
     public User mapToUser(EditUserDto editUserDto) {
         return new User(
+                editUserDto.getUserId(),
                 editUserDto.getUsername(),
                 editUserDto.getPassword(),
                 editUserDto.getMailAddressee());
@@ -46,6 +47,11 @@ public class DtoMapper {
     public AuthResponseDto mapToAuthResponseDto(Jwt token) {
         return new AuthResponseDto(
                 token.getToken());
+    }
+
+    public AuthResponseDto mapToAuthResponseDto(User user) {
+        return new AuthResponseDto(
+                user.getVerificationKey().getValue());
     }
 
     public ReadUserDto mapToReadUserDto(User user) {
@@ -124,8 +130,7 @@ public class DtoMapper {
                 coin.getAveragePurchasePrice(),
                 coin.getAverageSalePrice(),
                 coin.getTotalValueOfCoinsSold(),
-                coin.getTotalValuePurchaseCoin(),
-                coin.getWallet().getWalletId());
+                coin.getTotalValuePurchaseCoin());
     }
 
     public List<ReadCoinDto> mapToReadCoinDtoList(List<Coin> coinList) {
@@ -145,7 +150,6 @@ public class DtoMapper {
     }
 
     public Role mapToRole(InputDataRoleDto inputDataRoleDto) throws UserNotFoundException, RoleNotFoundException {
-
         User user = userService.findByUserId(inputDataRoleDto.getUserId());
         Role role = roleService.findByRoleName(inputDataRoleDto.getRoleName());
         List<User> users = userService.getAllUser();

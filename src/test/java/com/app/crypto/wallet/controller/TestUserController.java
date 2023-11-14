@@ -74,7 +74,7 @@ public class TestUserController {
     }
 
     @Test
-    void shouldDeleteUser() throws UserPermissionsException {
+    void shouldDeleteUser() throws UserPermissionsException, UserNotFoundException {
         //Given
         UserController userController = new UserController(service, dto);
         User databaseJan = new User(1L, "jan", "mail@123", true, new ArrayList<>(), new ArrayList<>());

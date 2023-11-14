@@ -6,13 +6,14 @@ import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController
@@ -28,13 +29,13 @@ public class UserController {
     public ResponseEntity<ReadUserDto> getUser(@PathVariable Long userId) throws UserNotFoundException, UserPermissionsException {
      return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.getUserById(userId)));
     }
-    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/edits", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReadUserDto> editAccount(@RequestBody EditUserDto editUserDto) throws UserNotFoundException, UserPermissionsException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.editUserAccount(dtoMapper.mapToUser(editUserDto))));
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws UserPermissionsException {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws UserPermissionsException, UserNotFoundException {
         userService.deleteUserAccount(userId);
         return ResponseEntity.ok().build();
     }

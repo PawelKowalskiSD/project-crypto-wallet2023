@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -55,20 +54,22 @@ class UserServiceTest {
         assertEquals(1L, result.getUserId());
         assertEquals("jan", result.getUsername());
         assertEquals("jan@wp.pl", result.getMailAddressee());
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(2L));
-        verify(userRepository, times(1)).findByUserId(modifyJan.getUserId());
+        assertThrows(UserPermissionsException.class, () -> userService.getUserById(2L));
+        verify(userRepository, times(3)).findByUserId(modifyJan.getUserId());
         verify(passwordEncoder, times(1)).encode(modifyJan.getPassword());
     }
 
     @Test
-    void shouldDeleteUserAccount() throws UserPermissionsException {
+    void shouldDeleteUserAccount() throws UserPermissionsException, UserNotFoundException {
         //Given
         User databaseUser = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         long requestUserId = 1L;
         when(authConfig.getUserIdFromAuthentication()).thenReturn(databaseUser.getUserId());
+        when(userRepository.findByUserId(requestUserId)).thenReturn(Optional.of(databaseUser));
         //When
         userService.deleteUserAccount(requestUserId);
         //Then
+        assertThrows(UserPermissionsException.class, () -> userService.deleteUserAccount(2L));
         verify(userRepository, times(1)).deleteById(requestUserId);
     }
 
@@ -126,7 +127,7 @@ class UserServiceTest {
         assertEquals("new wallet", result.getWalletList().get(0).getWalletName());
         assertEquals(1L, result.getRoles().get(0).getRoleId());
         assertEquals("USER", result.getRoles().get(0).getRoleName());
-        verify(userRepository, times(1)).findByUserId(jan.getUserId());
+        verify(userRepository, times(2)).findByUserId(jan.getUserId());
     }
 
     @Test

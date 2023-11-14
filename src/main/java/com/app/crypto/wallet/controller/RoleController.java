@@ -8,13 +8,14 @@ import com.app.crypto.wallet.exceptions.RoleNotFoundException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.RoleService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @RequestMapping(value = "/roles")
 @RestController

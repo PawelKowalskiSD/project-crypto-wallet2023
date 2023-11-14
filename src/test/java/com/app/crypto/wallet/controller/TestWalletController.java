@@ -76,7 +76,7 @@ public class TestWalletController {
     }
 
     @Test
-    void shouldEditWallet() throws UserPermissionsException {
+    void shouldEditWallet() throws UserPermissionsException, WalletNotFoundException {
         //Given
         WalletController walletController = new WalletController(service, dto);
         EditWalletDto requestWalletDto = new EditWalletDto(1L, "my wallet");

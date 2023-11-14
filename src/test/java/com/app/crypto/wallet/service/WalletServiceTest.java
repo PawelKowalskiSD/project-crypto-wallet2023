@@ -13,36 +13,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class WalletServiceTest {
-
     @Mock
     private WalletRepository walletRepository;
-
     @Mock
     private AuthConfig authConfig;
-
     @Mock
     private UserRepository userRepository;
-
     @InjectMocks
     private WalletService walletService;
 
     @Test
     void shouldFindAllWallets() throws UserPermissionsException {
         //Given
-        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
-
+        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(jan.getUserId());
         List<Wallet> responseWallets = List.of(
                 new Wallet(1L, "new wallet", jan),
@@ -52,8 +45,8 @@ public class WalletServiceTest {
         //When
         List<Wallet> result = walletService.findAllWallets();
         //Then
-        assertEquals(2,result.size());
-        assertEquals("second wallet",result.get(1).getWalletName());
+        assertEquals(2, result.size());
+        assertEquals("second wallet", result.get(1).getWalletName());
         assertNotEquals(3, result.size());
         assertEquals(1L, result.get(0).getWalletId());
         verify(walletRepository, times(1)).findWalletsByUser_UserId(jan.getUserId());
@@ -62,11 +55,9 @@ public class WalletServiceTest {
     @Test
     void shouldFindWallet() throws WalletNotFoundException, UserPermissionsException {
         //Given
-        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
-        User domingo = new User(2L, "domingo", "domingo123", "domingo@wp.pl", true, List.of(new Role(1L,"USER")));
+        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(jan.getUserId());
         Wallet wallet = new Wallet(1L, "new wallet", jan);
-        Wallet wallet3 = new Wallet(3L, "new wallet", domingo);
         when(walletRepository.findByWalletId(wallet.getWalletId())).thenReturn(Optional.of(wallet));
         //When
         Wallet result = walletService.findWallet(wallet.getWalletId());
@@ -81,7 +72,7 @@ public class WalletServiceTest {
     @Test
     void shouldCreateNewWallet() throws UserPermissionsException, UserNotFoundException {
         //Given
-        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
+        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(jan.getUserId());
         Wallet createWallet = new Wallet(1L, "new Wallet", jan);
         when(userRepository.findByUserId(jan.getUserId())).thenReturn(Optional.of(jan));
@@ -95,9 +86,9 @@ public class WalletServiceTest {
     }
 
     @Test
-    void shouldEditWallet() throws UserPermissionsException {
+    void shouldEditWallet() throws UserPermissionsException, WalletNotFoundException {
         //Given
-        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
+        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(jan.getUserId());
         Wallet walletToEdit = new Wallet(1L, "old wallet", jan);
         when(walletRepository.findByWalletId(walletToEdit.getWalletId())).thenReturn(Optional.of(walletToEdit));
@@ -113,7 +104,7 @@ public class WalletServiceTest {
     @Test
     void shouldDeleteWallet() throws UserPermissionsException {
         //Given
-        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L,"USER")));
+        User jan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(jan.getUserId());
         Wallet deleteWallet = new Wallet(1L, "old wallet", jan);
         when(walletRepository.findByWalletId(deleteWallet.getWalletId())).thenReturn(Optional.of(deleteWallet));

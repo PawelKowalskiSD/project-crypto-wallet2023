@@ -46,16 +46,18 @@ public class WalletService {
         return wallet;
     }
 
-    public Wallet editWallet(Wallet wallet) throws UserPermissionsException {
-        Optional<Wallet> findWallet = walletRepository.findByWalletId(wallet.getWalletId());
+    public Wallet editWallet(Wallet wallet) throws UserPermissionsException, WalletNotFoundException {
+        Wallet findWallet = walletRepository.findByWalletId(wallet.getWalletId()).orElseThrow(WalletNotFoundException::new);
         long validateUserId = authConfig.getUserIdFromAuthentication();
-        if (findWallet.isPresent() && wallet.getUser().getUserId() == validateUserId) {
+        if (findWallet != null && findWallet.getUser().getUserId() == validateUserId) {
             if (wallet.getWalletName() != null) {
                 wallet.setWalletName(wallet.getWalletName());
+                wallet.setUser(findWallet.getUser());
             }
             walletRepository.save(wallet);
-        }
-        return wallet;
+            return wallet;
+        } else
+            throw new UserPermissionsException();
     }
 
     public void deleteWalletByWalletId(Long walletId) throws UserPermissionsException {

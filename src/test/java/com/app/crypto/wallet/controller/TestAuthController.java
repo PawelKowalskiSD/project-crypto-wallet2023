@@ -2,8 +2,10 @@ package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
+import com.app.crypto.wallet.domain.VerificationKey;
 import com.app.crypto.wallet.domain.dto.*;
 import com.app.crypto.wallet.exceptions.RoleNotFoundException;
+import com.app.crypto.wallet.exceptions.UserAccountVerificationException;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
@@ -22,7 +24,7 @@ public class TestAuthController {
     private final DtoMapper dto = mock(DtoMapper.class);
 
     @Test
-    void shouldLogin() throws UserNotFoundException {
+    void shouldLogin() throws UserNotFoundException, UserAccountVerificationException {
         //Given
         AuthController authController = new AuthController(authService, userService, dto);
         AuthRequestDto requestDto = new AuthRequestDto("pablo", "pablo123");
@@ -47,13 +49,14 @@ public class TestAuthController {
         User createNewUser = new User(1L, "pablo", "pablo123", "mail@ap.pl", false, new ArrayList<>());
         when(dto.mapToUser(requestCreateUserDto)).thenReturn(createNewUser);
         User userInDatabase = new User(1L, "pablo", "pablo123", "mail@ap.pl", false, new ArrayList<>());
+        VerificationKey verificationKey = new VerificationKey("dafGHhGfFGSFSDFASDGsgGFfddasdd", userInDatabase);
         when(userService.createNewUser(createNewUser)).thenReturn(userInDatabase);
-        ReadUserDto responseCreateUserDto = new ReadUserDto(1L, "pablo", "mail@ap.pl", false, List.of(new ReadRoleDto(1L, "USER")), new ArrayList<>());
-        when(dto.mapToReadUserDto(userInDatabase)).thenReturn(responseCreateUserDto);
+        AuthResponseDto responseCreateUserDto = new AuthResponseDto(verificationKey.getValue());
+        when(dto.mapToAuthResponseDto(userInDatabase)).thenReturn(responseCreateUserDto);
         //When
-        ReadUserDto result = authController.singUp(requestCreateUserDto).getBody();
+        AuthResponseDto result = authController.singUp(requestCreateUserDto).getBody();
         //Then
-        assertEquals("pablo", result.getUsername());
+        assertEquals("dafGHhGfFGSFSDFASDGsgGFfddasdd", result.getAccessToken());
         verify(userService, times(1)).createNewUser(createNewUser);
     }
 

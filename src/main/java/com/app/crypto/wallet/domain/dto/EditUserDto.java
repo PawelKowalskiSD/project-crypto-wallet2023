@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EditUserDto {
+
+    @JsonProperty("user_id")
+    private long userId;
     @JsonProperty("username")
     private String username;
 
@@ -22,5 +25,11 @@ public class EditUserDto {
 
     public EditUserDto(String username) {
         this.username = username;
+    }
+
+    public EditUserDto(String username, String password, String mailAddressee) {
+        this.username = username;
+        this.password = password;
+        this.mailAddressee = mailAddressee;
     }
 }

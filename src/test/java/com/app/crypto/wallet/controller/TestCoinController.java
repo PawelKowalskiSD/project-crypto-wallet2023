@@ -52,7 +52,7 @@ public class TestCoinController {
     }
 
     @Test
-    void shouldGetCoin() throws CoinNotFoundException {
+    void shouldGetCoin() throws CoinNotFoundException, UserPermissionsException {
         //Given
         CoinController coinController = new CoinController(service, dto, clientService);
         long requestCoinId = 1L;
@@ -78,7 +78,7 @@ public class TestCoinController {
         when(dto.mapToCoin(requestAddCoinDto)).thenReturn(expectedCoinInDatabase);
         Coin databaseCoin = new Coin(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase);
         when(clientService.addCoinToWallet(expectedCoinInDatabase)).thenReturn(databaseCoin);
-        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null, walletInDatabase.getWalletId());
+        ReadCoinDto responseAddCoinDto = new ReadCoinDto(1L, "Bitcoin", "BTC", new BigDecimal(10), new BigDecimal(32_000), null, new BigDecimal(32_000), new BigDecimal(320_000), null);
         when(dto.mapToReadCoinDto(databaseCoin)).thenReturn(responseAddCoinDto);
         //When
         ReadCoinDto result = coinController.addCoin(requestAddCoinDto).getBody();
@@ -86,7 +86,6 @@ public class TestCoinController {
         assertEquals(new BigDecimal(10), result.getQuantity());
         assertEquals("Bitcoin", result.getCoinName());
         assertEquals(1L, result.getCoinId());
-        assertEquals(1L, result.getWalletId());
         verify(clientService, times(1)).addCoinToWallet(expectedCoinInDatabase);
     }
 

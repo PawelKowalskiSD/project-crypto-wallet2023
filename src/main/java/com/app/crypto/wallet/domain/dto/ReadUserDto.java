@@ -24,7 +24,7 @@ public class ReadUserDto {
     @JsonProperty("mail")
     private String mailAddressee;
 
-    @JsonProperty("verifiedEmail")
+    @JsonProperty("email_verification")
     private boolean isEnabled;
 
     @JsonProperty("roles")

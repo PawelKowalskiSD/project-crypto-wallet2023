@@ -30,31 +30,27 @@ public class UserService {
     private final AuthConfig authConfig;
 
     public User editUserAccount(User user) throws UserNotFoundException, UserPermissionsException {
-        long validateUserId = authConfig.getUserIdFromAuthentication();
-        Optional<User> findUserId = userRepository.findByUserId(user.getUserId());
-        if (findUserId.isPresent() && validateUserId == user.getUserId()) {
+        User findUserId = getUserById(user.getUserId());
+        if (findUserId != null) {
             if (user.getUsername() != null) {
-                user.setUsername(user.getUsername());
+                findUserId.setUsername(user.getUsername());
             }
             if (user.getPassword() != null) {
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                findUserId.setPassword(passwordEncoder.encode(user.getPassword()));
             }
             if (user.getMailAddressee() != null) {
-                user.setMailAddressee(user.getMailAddressee());
+                findUserId.setMailAddressee(user.getMailAddressee());
             }
-            userRepository.save(user);
-        } else {
-            throw new UserNotFoundException();
+            userRepository.save(findUserId);
         }
-        return user;
+        return findUserId;
     }
 
-    public void deleteUserAccount(Long userId) throws UserPermissionsException {
-        long validateUserId = authConfig.getUserIdFromAuthentication();
-        if (validateUserId == userId)
+    public void deleteUserAccount(Long userId) throws UserPermissionsException, UserNotFoundException {
+        User user = getUserById(userId);
+        boolean roleAdminAssigned = user.getRoles().stream().map(Role::getRoleName).anyMatch(u -> u.contains("ADMIN"));
+        if (user.getUserId() == userId || roleAdminAssigned)
             userRepository.deleteById(userId);
-        else
-            throw new UserPermissionsException();
     }
 
     public List<User> getAllUser() {
@@ -63,10 +59,12 @@ public class UserService {
 
     public User getUserById(Long userId) throws UserNotFoundException, UserPermissionsException {
         long validateUserId = authConfig.getUserIdFromAuthentication();
-        if (userId == validateUserId)
+        User user = userRepository.findByUserId(validateUserId).orElseThrow(UserNotFoundException::new);
+        boolean roleAdminAssigned = user.getRoles().stream().map(Role::getRoleName).anyMatch(u -> u.contains("ADMIN"));
+        if (userId == validateUserId || roleAdminAssigned)
             return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
         else
-            throw new UserNotFoundException();
+            throw new UserPermissionsException();
     }
 
     public User createNewUser(User user) throws RoleNotFoundException {
@@ -77,8 +75,9 @@ public class UserService {
         user.setMailAddressee(user.getMailAddressee());
         user.setRoles(List.of(role));
         user.setEnabled(false);
-        userRepository.save(user);
         VerificationKey verificationKey = new VerificationKey(verifyToken, user);
+        user.setVerificationKey(verificationKey);
+        userRepository.save(user);
         verificationKeyRepository.save(verificationKey);
 
         mailSenderService.sendMailToActiveAccount(Mail.builder()

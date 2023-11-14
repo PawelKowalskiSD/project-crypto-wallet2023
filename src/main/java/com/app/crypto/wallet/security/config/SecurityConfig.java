@@ -3,9 +3,12 @@ package com.app.crypto.wallet.security.config;
 import com.app.crypto.wallet.exceptions.UserNotFoundException;
 import com.app.crypto.wallet.repository.UserRepository;
 import com.app.crypto.wallet.security.jwt.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +22,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
+
+import java.io.PrintWriter;
 
 @RequiredArgsConstructor
 @Configuration
@@ -36,7 +41,7 @@ public class SecurityConfig {
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity.authorizeHttpRequests()
                 .requestMatchers(
-                "/auth/**",
+                        "/auth/**",
                         "/v2/api-docs",
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
@@ -47,14 +52,33 @@ public class SecurityConfig {
                         "/webjars/**"
                 )
                 .permitAll()
-                .requestMatchers("/users/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users/{userId}" ).hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/users/{userId}" ).hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/users/edits").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/users").hasAnyAuthority("ADMIN")
                 .requestMatchers("/coins/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/wallets/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/roles/**").hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated();
-        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.logout()
+        httpSecurity
+                .exceptionHandling()
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+                    // Tworzymy niestandardową treść JSON z informacją o błędzie
+                    String jsonResponse = "{\"error\": \"Access Denied\", \"message\": \"You do not have permission to access this resource\"}";
+
+                    // Wysyłamy odpowiedź JSON z niestandardową treścią
+                    PrintWriter writer = response.getWriter();
+                    writer.print(jsonResponse);
+                    writer.flush();
+                });
+        httpSecurity
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .logout()
                 .logoutUrl("/auth/log-out")
                 .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());

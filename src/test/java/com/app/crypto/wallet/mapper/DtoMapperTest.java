@@ -204,7 +204,7 @@ class DtoMapperTest {
     @Test
     void shouldMapToReadCoinDto() {
         //Given
-        Coin coin = new Coin(1L, "bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000), new Wallet(1L, "wallet"));
+        Coin coin = new Coin(1L, "bitcoin", "btc", new BigDecimal(2), new BigDecimal(32000));
         //When
         ReadCoinDto result = dtoMapper.mapToReadCoinDto(coin);
         //Then
@@ -213,7 +213,6 @@ class DtoMapperTest {
         assertEquals("btc", result.getSymbol());
         assertEquals(new BigDecimal(2), result.getQuantity());
         assertEquals(new BigDecimal(32000), result.getCurrentPrice());
-        assertEquals(1L, result.getWalletId());
     }
 
     @Test

@@ -75,4 +75,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>("You don't have that much in your wallet", HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<Object> handlerUserAccountVerificationException(UserAccountVerificationException exception) {
+        return new ResponseEntity<>("You must confirm your email address to log in", HttpStatus.FORBIDDEN);
+    }
+
 }

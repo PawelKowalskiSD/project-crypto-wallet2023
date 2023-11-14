@@ -11,11 +11,13 @@ import com.app.crypto.wallet.exceptions.UserPermissionsException;
 import com.app.crypto.wallet.exceptions.WalletNotFoundException;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.CoinService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/coins")
@@ -30,7 +32,7 @@ public class CoinController {
     }
 
     @GetMapping(value = "/{coinId}")
-    public ResponseEntity<ReadCoinDto> getCoin(@PathVariable Long coinId) throws CoinNotFoundException {
+    public ResponseEntity<ReadCoinDto> getCoin(@PathVariable Long coinId) throws CoinNotFoundException, UserPermissionsException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadCoinDto(coinService.findCoinById(coinId)));
     }
 

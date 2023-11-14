@@ -41,9 +41,6 @@ public class ReadCoinDto {
     @JsonProperty("total_value_purchase_coin")
     private BigDecimal totalValuePurchaseCoin;
 
-    @JsonProperty("wallet_id")
-    private long walletId;
-
     public ReadCoinDto(long coinId, String coinName, String symbol, BigDecimal currentPrice) {
         this.coinId = coinId;
         this.coinName = coinName;
@@ -56,25 +53,5 @@ public class ReadCoinDto {
         this.coinName = coinName;
         this.quantity = quantity;
         this.currentPrice = currentPrice;
-    }
-
-    public ReadCoinDto(long coinId, String coinName, String symbol, BigDecimal quantity, BigDecimal currentPrice) {
-        this.coinId = coinId;
-        this.coinName = coinName;
-        this.symbol = symbol;
-        this.quantity = quantity;
-        this.currentPrice = currentPrice;
-    }
-
-    public ReadCoinDto(long coinId, String coinName, String symbol, BigDecimal quantity, BigDecimal currentPrice, BigDecimal averagePurchasePrice, BigDecimal averageSalePrice, BigDecimal totalValueOfCoinsSold, BigDecimal totalValuePurchaseCoin) {
-        this.coinId = coinId;
-        this.coinName = coinName;
-        this.symbol = symbol;
-        this.quantity = quantity;
-        this.currentPrice = currentPrice;
-        this.averagePurchasePrice = averagePurchasePrice;
-        this.averageSalePrice = averageSalePrice;
-        this.totalValueOfCoinsSold = totalValueOfCoinsSold;
-        this.totalValuePurchaseCoin = totalValuePurchaseCoin;
     }
 }
