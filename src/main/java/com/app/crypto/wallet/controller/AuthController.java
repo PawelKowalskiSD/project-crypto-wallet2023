@@ -3,9 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.dto.AuthRequestDto;
 import com.app.crypto.wallet.domain.dto.AuthResponseDto;
 import com.app.crypto.wallet.domain.dto.CreateUserDto;
-import com.app.crypto.wallet.exceptions.RoleNotFoundException;
-import com.app.crypto.wallet.exceptions.UserAccountVerificationException;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.exceptions.*;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
 import com.app.crypto.wallet.service.UserService;
@@ -27,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthResponseDto> singUp(@RequestBody CreateUserDto createUserDto) throws RoleNotFoundException {
+    public ResponseEntity<AuthResponseDto> singUp(@RequestBody CreateUserDto createUserDto) throws RoleNotFoundException, IncompleteDataException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         return ResponseEntity.ok().body(dtoMapper.mapToAuthResponseDto(userService.createNewUser(dtoMapper.mapToUser(createUserDto))));
     }
 

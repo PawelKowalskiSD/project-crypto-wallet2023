@@ -1,5 +1,6 @@
 package com.app.crypto.wallet.security.jwt;
 
+import com.app.crypto.wallet.client.config.AppConfig;
 import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.repository.JwtRepository;
@@ -12,6 +13,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,9 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Getter
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-
+    private final AppConfig appConfig;
     private final JwtRepository jwtRepository;
 
     @Override
@@ -72,8 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
         return userId;
     }
 
-    private static DecodedJWT getDecodedJWT(String token) {
-        Algorithm algorithm = Algorithm.HMAC512("secret");
+    private  DecodedJWT getDecodedJWT(String token) {
+        Algorithm algorithm = Algorithm.HMAC512(appConfig.getSecret());
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT jwt = verifier.verify(token);
         return jwt;

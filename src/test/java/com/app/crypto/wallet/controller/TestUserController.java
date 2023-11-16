@@ -3,8 +3,7 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.dto.EditUserDto;
 import com.app.crypto.wallet.domain.dto.ReadUserDto;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
-import com.app.crypto.wallet.exceptions.UserPermissionsException;
+import com.app.crypto.wallet.exceptions.*;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class TestUserController {
     }
 
     @Test
-    void shouldEditAccount() throws UserNotFoundException, UserPermissionsException {
+    void shouldEditAccount() throws UserNotFoundException, UserPermissionsException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         //Given
         UserController userController = new UserController(service, dto);
         EditUserDto requestUserDto = new EditUserDto("Alan");

@@ -12,4 +12,7 @@ public class AppConfig {
 
     @Value("${localhost.api.endpoint.prod}")
     private String basicUrl;
+
+    @Value("${application.security.jwt.secret-key}")
+    private String secret;
 }

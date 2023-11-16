@@ -3,17 +3,16 @@ package com.app.crypto.wallet.controller;
 import com.app.crypto.wallet.domain.Jwt;
 import com.app.crypto.wallet.domain.User;
 import com.app.crypto.wallet.domain.VerificationKey;
-import com.app.crypto.wallet.domain.dto.*;
-import com.app.crypto.wallet.exceptions.RoleNotFoundException;
-import com.app.crypto.wallet.exceptions.UserAccountVerificationException;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
+import com.app.crypto.wallet.domain.dto.AuthRequestDto;
+import com.app.crypto.wallet.domain.dto.AuthResponseDto;
+import com.app.crypto.wallet.domain.dto.CreateUserDto;
+import com.app.crypto.wallet.exceptions.*;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.AuthService;
 import com.app.crypto.wallet.service.UserService;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -42,7 +41,7 @@ public class TestAuthController {
     }
 
     @Test
-    void shouldSingUp() throws RoleNotFoundException {
+    void shouldSingUp() throws RoleNotFoundException, IncompleteDataException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         //Given
         AuthController authController = new AuthController(authService, userService, dto);
         CreateUserDto requestCreateUserDto = new CreateUserDto("pablo", "pablo123", "mail@ap.pl");

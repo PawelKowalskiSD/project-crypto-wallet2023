@@ -2,12 +2,12 @@ package com.app.crypto.wallet.service;
 
 import com.app.crypto.wallet.client.config.AuthConfig;
 import com.app.crypto.wallet.domain.*;
-import com.app.crypto.wallet.exceptions.RoleNotFoundException;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
-import com.app.crypto.wallet.exceptions.UserPermissionsException;
+import com.app.crypto.wallet.exceptions.*;
 import com.app.crypto.wallet.repository.RoleRepository;
 import com.app.crypto.wallet.repository.UserRepository;
 import com.app.crypto.wallet.repository.VerificationKeyRepository;
+import com.app.crypto.wallet.validator.EmailValidator;
+import com.app.crypto.wallet.validator.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,23 +37,30 @@ class UserServiceTest {
     private VerificationKeyRepository verificationKeyRepository;
     @Mock
     private MailSenderService mailSenderService;
+    @Mock
+    private EmailValidator emailValidator;
+    @Mock
+    private UserValidator userValidator;
     @InjectMocks
     private UserService userService;
 
     @Test
-    void ShouldEditUserAccount() throws UserPermissionsException, UserNotFoundException {
+    void ShouldEditUserAccount() throws UserPermissionsException, UserNotFoundException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         //Given
-        User modifyJan = new User(1L, "jan", "jan123", "jan@wp.pl", true, List.of(new Role(1L, "USER")));
+        User modifyJan = new User(1L, "jan", "jan123", "jan11@wp.pl", true, List.of(new Role(1L, "USER")));
         when(authConfig.getUserIdFromAuthentication()).thenReturn(modifyJan.getUserId());
-        User modifiedJan = new User(1L, "jan", "jan123", "janek@wp.pl", true, List.of(new Role(1L, "USER")));
-        when(userRepository.findByUserId(modifiedJan.getUserId())).thenReturn(Optional.of(modifyJan));
+        User modifiedJan = new User(1L, "jan1", "jan123", "janek@wp.pl", true, List.of(new Role(1L, "USER")));
+        when(userRepository.findByUserId(modifyJan.getUserId())).thenReturn(Optional.of(modifyJan));
+        when(userValidator.validateUserName(modifyJan.getUsername())).thenReturn(false);
+        when(userValidator.checkMailInDatabase(modifyJan.getMailAddressee())).thenReturn(false);
+        when(emailValidator.isValidEmail(modifyJan.getMailAddressee())).thenReturn(true);
         when(passwordEncoder.encode(modifiedJan.getPassword())).thenReturn(modifyJan.getPassword());
         //When
         User result = userService.editUserAccount(modifyJan);
         //Then
         assertEquals(1L, result.getUserId());
         assertEquals("jan", result.getUsername());
-        assertEquals("jan@wp.pl", result.getMailAddressee());
+        assertEquals("jan11@wp.pl", result.getMailAddressee());
         assertThrows(UserPermissionsException.class, () -> userService.getUserById(2L));
         verify(userRepository, times(3)).findByUserId(modifyJan.getUserId());
         verify(passwordEncoder, times(1)).encode(modifyJan.getPassword());
@@ -131,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldCreateNewUser() throws RoleNotFoundException {
+    void shouldCreateNewUser() throws RoleNotFoundException, IncompleteDataException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         //Given
         String verifyToken = UUID.randomUUID().toString();
         List<Role> roles = new ArrayList<>();
@@ -142,6 +149,9 @@ class UserServiceTest {
         verificationKey.setUser(jan);
         when(roleRepository.findByRoleName(roles.get(0).getRoleName())).thenReturn(Optional.of(jan.getRoles().get(0)));
         when(userRepository.save(any(User.class))).thenReturn(jan);
+        when(emailValidator.isValidEmail(jan.getMailAddressee())).thenReturn(true);
+        when(userValidator.validateUserName(jan.getUsername())).thenReturn(false);
+        when(userValidator.checkMailInDatabase(jan.getMailAddressee())).thenReturn(false);
         when(verificationKeyRepository.save(any(VerificationKey.class))).thenReturn(verificationKey);
         doNothing().when(mailSenderService).sendMailToActiveAccount(any(Mail.class), any(VerificationKey.class));
         //When
@@ -156,6 +166,9 @@ class UserServiceTest {
         verify(mailSenderService).sendMailToActiveAccount(any(Mail.class), any(VerificationKey.class));
         verify(roleRepository, times(1)).findByRoleName(roles.get(0).getRoleName());
         verify(userRepository, times(1)).save(jan);
+        verify(emailValidator, times(1)).isValidEmail(jan.getMailAddressee());
+        verify(userValidator, times(1)).validateUserName(jan.getUsername());
+        verify(userValidator, times(1)).checkMailInDatabase(jan.getMailAddressee());
     }
 
     @Test

@@ -2,8 +2,7 @@ package com.app.crypto.wallet.controller;
 
 import com.app.crypto.wallet.domain.dto.EditUserDto;
 import com.app.crypto.wallet.domain.dto.ReadUserDto;
-import com.app.crypto.wallet.exceptions.UserNotFoundException;
-import com.app.crypto.wallet.exceptions.UserPermissionsException;
+import com.app.crypto.wallet.exceptions.*;
 import com.app.crypto.wallet.mapper.DtoMapper;
 import com.app.crypto.wallet.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,7 +29,7 @@ public class UserController {
      return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.getUserById(userId)));
     }
     @PatchMapping(value = "/edits", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReadUserDto> editAccount(@RequestBody EditUserDto editUserDto) throws UserNotFoundException, UserPermissionsException {
+    public ResponseEntity<ReadUserDto> editAccount(@RequestBody EditUserDto editUserDto) throws UserNotFoundException, UserPermissionsException, WrongEmailFormatException, DuplicateUsernameException, DuplicateMailAddresseeException {
         return ResponseEntity.ok().body(dtoMapper.mapToReadUserDto(userService.editUserAccount(dtoMapper.mapToUser(editUserDto))));
     }
 

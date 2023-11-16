@@ -71,13 +71,33 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-     public ResponseEntity<Object> handlerCoinQuantityNotFoundException(CoinQuantityNotFoundException exception) {
+    public ResponseEntity<Object> handlerCoinQuantityNotFoundException(CoinQuantityNotFoundException exception) {
         return new ResponseEntity<>("You don't have that much in your wallet", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<Object> handlerUserAccountVerificationException(UserAccountVerificationException exception) {
         return new ResponseEntity<>("You must confirm your email address to log in", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handlerIncompleteDataException(IncompleteDataException exception) {
+        return new ResponseEntity<>("Enter all data required for user registration", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WrongEmailFormatException.class)
+    public ResponseEntity<Object> handleWrongEmailFormatException(WrongEmailFormatException exception) {
+        return new ResponseEntity<>("Invalid e-mail address format", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ResponseEntity<Object> handlerDuplicateUsernameException(DuplicateUsernameException exception) {
+        return new ResponseEntity<>("Username is already taken, try another name", HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateMailAddresseeException.class)
+    public ResponseEntity<Object> handlerDuplicateMailAddresseeException(DuplicateMailAddresseeException exception) {
+        return new ResponseEntity<>("Email address is already in use, please enter another one", HttpStatus.CONFLICT);
     }
 
 }
