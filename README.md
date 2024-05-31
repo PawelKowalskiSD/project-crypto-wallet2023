@@ -41,7 +41,7 @@ Additionally, for my own application, I learned the basics of Spring Boot Securi
 ## Setup
 To get started with this project, you will need to have the fallowing installed on your local machine:
 * JDK 17
-* Gradle 8.2.1
+* Gradle 8.6
 
 To build and run project, fallow these steps:
 * Clone the repository: 'git clone https://github.com/PawelKowalskiSD/project-crypto-wallet2023.git'
